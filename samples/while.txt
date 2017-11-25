@@ -1,12 +1,15 @@
 SEQ(ASSIGN(i, 0),
-SEQ(ASSIGN(a, 0),
-SEQ(LOOP(SEQ(ASSUME(i == 0),
-	SEQ(AMB(
-		SEQ(ASSUME(a != 0), ASSIGN(b, 2)), 
-		SEQ(ASSUME(a == 0), ASSIGN(b, 3)))),
-	ASSIGN(a, i))),
-SEQ(ASSUME(i != 0), 
-ASSIGN(a, b)))))
-
-
-EXPR ::= == != TRUE FALSE 
+	SEQ(ASSIGN(a, 0),
+		SEQ(LOOP(SEQ(ASSUME(i == 0),
+				 	 SEQ(AMB(SEQ(ASSUME(a != 0),
+				 	             ASSIGN(b, 2)), 
+							 SEQ(ASSUME(a == 0),
+							 	 ASSIGN(b, 3))),
+						 ASSIGN(a, i))
+					)
+			),
+			SEQ(ASSUME(i != 0), 
+				ASSIGN(a, b))
+			)
+		)
+	)
