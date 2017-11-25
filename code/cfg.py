@@ -1,103 +1,161 @@
-import sys
-import graphviz as gv
+""" ===========================================================================
+File   : cfg.py
+CSC410 : Project 6: Program Normalizer and Control Flow Graph Visualizer
+Author : Michael
 
+Converts an AST to a CFG
+=========================================================================== """
 
+# import sys
+# import graphviz as gv
 
- class Node(object):
-    def __init__(self, data ):
-        self.edge = data
+class CFG():
+    # head is first Node in CFG
+    # last is last Node in CFG
+    def __init__(self):
+        self.head = None
+        self.last = None
 
+class Node():
+    def __init__(self):
         self.left = None
         self.right = None
 
+class Edge():
+
+    def __init__(self, data, source, endpoint):
+        self.data = data
+        self.source = source
+        self.endpoint = endpoint
 
 
 def create_cfg(AST):
+    graph = None
 
-    head = None
+    if AST.type == SEQ:
+        graph = cfg_seq(AST)
+        return graph
 
-    if AST.data == "ASSIGN":
+    elif AST.type = ASSIGN:
+        graph = cfg_assign(AST)
+        return graph
+
+    elif AST.type == ASSUME:
+        graph = cfg_assume(statement)
+        return graph
+
+    elif AST.type == AMB:
+        graph = cfg_amb(AST)
+        return graph
+
+    elif AST.type = LOOP:
+        graph = cfg_loop(AST)
+        return graph
+'''
+Return a control flow graph representing an assign statement 
+'''
 
 
-        head = Node(AST.data)
+def cfg_assign(AST):
+
+    statement = get_assignment(AST)
+    control = CFG()
+    firstNode = Node()
+    secondNode = Node()
 
 
-        head.child = create_cfg(data[statement.end():])
-        return head 
+    firstNode.left = Edge(statement, firstNode, secondNode)
 
-    elif statement.group() == "ASSUME":
-
-        assign = re.search("\((.*?)\)", data[statement.end():])
-        assign = assign.group()
-        assign = assign[1:-1]
-        print(assign)
-        head = Node(assign)
-        head.child = create_cfg(data[statement.end():])
-        return head 
-
-    elif statement.group() == "AMB":
-        target = data[statement.end():]
-
-        inner = scope_find(target)
-
-        if_statement = target[:inner]
+    control.head = firstNode
+    control.last = secondNode
     
-        head = Node("if statement")
+    return control
+'''
+Return a control flow graph representing an assum statement
+'''
 
-        path1 = scope_find(if_statement[1:])
-
-
-        branch1 = if_statement[:path1]
-        
-        head.child = create_cfg(branch1)
-
-        branch2 = if_statement[(path1+2):]
-        
-        head.child2 = create_cfg(branch2)
+def cfg_assume(AST):
     
-        return head
+    statement = get_assumption(AST)
+    control = CFG()
+    firstNode = Node()
+    secondNode = Node()
 
-    else:
-        return head
+    firstNode.left = Edge(statement, firstNode, secondNode)
 
+    control.head = firstNode
+    control.last = secondNode
+    
+    return control
 
+def get_assignment(AST):
 
+    return None
 
-# def scope_find(data):
-#     pos = 0
-#     counter = 0
-#     stop = 0
-
-#     while (pos <= len(data)) and (stop == 0):
-#         if data[pos] == "(":
-#             counter = counter + 1
-#         elif data[pos] == ")":
-#             counter = counter - 1
-#             if counter == 0:
-#                 stop = 1
-#         pos = pos + 1
-#     return pos
+def get_assumption(AST):
+    return None
 
 
+def cfg_seq(AST):
+    graph = CFG()
+    lcfg = create_cfg(AST.left)
+    rcfg = create_cfg(AST.right)
+
+    graph.head = lcfg.head
+
+    graph.last = rcfg.last
 
 
-def parse_data(data):
-    ast = data.replace("\n", "")
-    ast = ast.replace("\t", "")
-    ast = ast.replace(" ", "")
-    return ast
+    epsilonEdge = Edge(EPS, lcfg.last, rcfg.head)
+
+    lcfg.last.left = epsilonEdge
+
+    return graph
 
 
-if __name__ == '__main__':
-    if len(sys.argv) == 2:
+def cfg_amb(AST):
+    graph = CFG()
 
-        g = graph()
+    lcfg = create_cfg(AST.left)
+    rcfg = create_cfg(AST.right)
 
-        f = open(sys.argv[1], "r")
-        data = f.read()    
-        ast = parse_data(data)
-        print(ast)
-        f.close()
 
-    else:
-        print("Expected usage: $ python whileparser.py input-file")
+    beginningNode = Node()
+    endNode = Node() 
+
+
+    beginningLeft = Edge(EPS, beginningNode, lcfg.head)
+    beginningRight = Edge(EPS, beginningNode, rcfg.head)
+
+    beginningNode.left = beginningLeft
+    beginningNode.right = beginningRight
+
+    endingLeft = Edge(EPS, lcfg.last, endNode)
+    endingRight = Edge(EPS, rcfg.last, endNode)
+
+    lcfg.last.left = endingLeft
+    rcfg.last.left = endingRight
+
+    graph.head = beginningNode
+    graph.last = endNode
+    return graph
+
+def cfg_loop(AST):
+
+    graph = CFG()
+
+    loopcfg = create_cfg(AST.left)
+
+    whileNode = Node()
+    
+    beginningEdge = Edge(EPS, whileNode, loopcfg.head)
+
+    whileNode.left = beginningEdge
+
+    loopEdge = Edge(EPS, loopcfg.last, whileNode)
+
+    loopcfg.last.left = loopEdge
+
+    graph.head = whileNode
+    graph.last = whileNode
+    return graph 
