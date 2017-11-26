@@ -6,7 +6,6 @@ Author : Michael
 Converts an AST to a CFG
 =========================================================================== """
 
-# import sys
 # import graphviz as gv
 
 class CFG():
@@ -28,34 +27,31 @@ class Edge():
         self.source = source
         self.endpoint = endpoint
 
-
 def create_cfg(AST):
     graph = None
 
-    if AST.type == SEQ:
+    if AST.getValue() == SEQ:
         graph = cfg_seq(AST)
         return graph
 
-    elif AST.type = ASSIGN:
+    elif AST.getValue() == ASSIGN:
         graph = cfg_assign(AST)
         return graph
 
-    elif AST.type == ASSUME:
-        graph = cfg_assume(statement)
+    elif AST.getValue() == ASSUME:
+        graph = cfg_assume(AST)
         return graph
 
-    elif AST.type == AMB:
+    elif AST.getValue() == AMB:
         graph = cfg_amb(AST)
         return graph
 
-    elif AST.type = LOOP:
+    elif AST.getValue() == LOOP:
         graph = cfg_loop(AST)
         return graph
 '''
 Return a control flow graph representing an assign statement 
 '''
-
-
 def cfg_assign(AST):
 
     statement = get_assignment(AST)
@@ -70,13 +66,13 @@ def cfg_assign(AST):
     control.last = secondNode
     
     return control
+
 '''
 Return a control flow graph representing an assum statement
 '''
-
 def cfg_assume(AST):
-    
-    statement = get_assumption(AST)
+    expr = AST.getLeft()
+    statement = get_assumption(expr)
     control = CFG()
     firstNode = Node()
     secondNode = Node()
@@ -89,17 +85,28 @@ def cfg_assume(AST):
     return control
 
 def get_assignment(AST):
-
-    return None
+    statement = ""
+    left = AST.getLeft()
+    right = AST.getRight()
+    statement = left.getValue() + "=" + right.getValue()
+    return statement
 
 def get_assumption(AST):
-    return None
+    value = AST.getValue()
+    statement = ""
+    if (AST.isExpr()) and (value != TRUE and value != FALSE and value != NOT):
+        left = AST.getLeft()
+        right = AST.getRight()
+        statement = "[" + left.getValue() + value + right.getValue() + "]"
+    else: 
+        statement = value
 
+    return statement
 
 def cfg_seq(AST):
     graph = CFG()
-    lcfg = create_cfg(AST.left)
-    rcfg = create_cfg(AST.right)
+    lcfg = create_cfg(AST.getLeft())
+    rcfg = create_cfg(AST.getRight())
 
     graph.head = lcfg.head
 
@@ -112,12 +119,11 @@ def cfg_seq(AST):
 
     return graph
 
-
 def cfg_amb(AST):
     graph = CFG()
 
-    lcfg = create_cfg(AST.left)
-    rcfg = create_cfg(AST.right)
+    lcfg = create_cfg(AST.getLeft())
+    rcfg = create_cfg(AST.getRight())
 
 
     beginningNode = Node()
@@ -144,7 +150,7 @@ def cfg_loop(AST):
 
     graph = CFG()
 
-    loopcfg = create_cfg(AST.left)
+    loopcfg = create_cfg(AST.getLeft())
 
     whileNode = Node()
     

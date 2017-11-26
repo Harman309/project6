@@ -29,7 +29,7 @@ GEQ    = ">="
 LEQ    = "<="
 
 # Epsilon transition
-EPS    = "episilon_transition"
+EPS    = "epsilon_transition"
 
 # List of expr nodes
 EXPRS    = [TRUE, FALSE, NOT, EQ, NEQ, GT, LT, GEQ, LEQ]

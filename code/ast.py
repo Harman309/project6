@@ -6,6 +6,7 @@ Author : Harman Sran
 Defines AST class that is While Program
 =========================================================================== """
 import sys
+from cfg import *
 from lib import *
 
 
@@ -138,20 +139,20 @@ def get_AST(path):
 """ ======================================================================= """
 """ ================== TESTING ============================================ """
 """ ======================================================================= """
-# if __name__=='__main__':
-#     print("")
-#     print(_flatten("../samples/if.txt"))
-#     print("")
-#     print("")
-#     ast = get_AST("../samples/if.txt")
-#     print(ast.__str__())
-#     print("")
-#     print("")
-#     print("")
-#     print("")
-#     print(_flatten("../samples/while.txt"))
-#     print("")
-#     print("")
-#     ast = get_AST("../samples/while.txt")
-#     print(ast.__str__())
-#     print("")
+if __name__=='__main__':
+    print("")
+    print(_flatten("../samples/if.txt"))
+    print("")
+    print("")
+    ast = get_AST("../samples/if.txt")
+    print(ast.__str__())
+    print("")
+    print("")
+    print("")
+    print("")
+    print(_flatten("../samples/while.txt"))
+    print("")
+    print("")
+    ast = get_AST("../samples/while.txt")
+    print(ast.__str__())
+    print("")
