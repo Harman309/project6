@@ -70,7 +70,7 @@ Return AST object defined by well-formed while program in while_str
 def _generate_AST(wp):
     val = header(wp)
 
-    print("AST for: " + val)
+    #print("AST for: " + val)
 
     # LOOP(STMT)
     if (val == LOOP):
