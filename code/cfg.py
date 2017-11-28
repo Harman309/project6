@@ -7,25 +7,59 @@ Converts an AST to a CFG
 =========================================================================== """
 
 # import graphviz as gv
+from lib import *
 
 class CFG():
     # head is first Node in CFG
     # last is last Node in CFG
     def __init__(self):
-        self.head = None
-        self.last = None
+        self._head = None
+        self._last = None
+
+    def getHead(self):
+        return self._head
+
+    def getLast(self):
+        return self._last
+
+    def setHead(self, head):
+        self._head = head
+
+    def setLast(self, last):
+        self._last = last
 
 class Node():
+    # left and right are Edge values
     def __init__(self):
-        self.left = None
-        self.right = None
+        self._left = None
+        self._right = None
+
+    def getLeft(self):
+        return self._left 
+
+    def getRight(self):
+        return self._right 
+
+    def setLeft(self, left):
+        self._left = left
+
+    def setRight(self, right):
+        self._right = right
 
 class Edge():
-
     def __init__(self, data, source, endpoint):
-        self.data = data
-        self.source = source
-        self.endpoint = endpoint
+        self._data = data
+        self._source = source
+        self._endpoint = endpoint
+
+    def getSource(self):
+        return self._source
+
+    def getEndpoint(self):
+        return self._endpoint 
+
+    def getData(self):
+        return self._data
 
 def create_cfg(AST):
     graph = None
@@ -49,22 +83,22 @@ def create_cfg(AST):
     elif AST.getValue() == LOOP:
         graph = cfg_loop(AST)
         return graph
+
 '''
 Return a control flow graph representing an assign statement 
 '''
 def cfg_assign(AST):
-
     statement = get_assignment(AST)
     control = CFG()
     firstNode = Node()
     secondNode = Node()
 
+    edge = Edge(statement, firstNode, secondNode)
 
-    firstNode.left = Edge(statement, firstNode, secondNode)
+    firstNode.setLeft(edge)
 
-    control.head = firstNode
-    control.last = secondNode
-    
+    control.setHead(firstNode)
+    control.setLast(secondNode)
     return control
 
 '''
@@ -77,11 +111,11 @@ def cfg_assume(AST):
     firstNode = Node()
     secondNode = Node()
 
-    firstNode.left = Edge(statement, firstNode, secondNode)
+    edge = Edge(statement, firstNode, secondNode)
+    firstNode.setLeft(edge)
 
-    control.head = firstNode
-    control.last = secondNode
-    
+    control.setHead(firstNode)
+    control.setLast(secondNode)
     return control
 
 def get_assignment(AST):
@@ -100,7 +134,6 @@ def get_assumption(AST):
         statement = "[" + left.getValue() + value + right.getValue() + "]"
     else: 
         statement = value
-
     return statement
 
 def cfg_seq(AST):
@@ -108,60 +141,50 @@ def cfg_seq(AST):
     lcfg = create_cfg(AST.getLeft())
     rcfg = create_cfg(AST.getRight())
 
-    graph.head = lcfg.head
+    graph.setHead(lcfg.getHead())
+    graph.setLast(rcfg.getLast())
 
-    graph.last = rcfg.last
+    epsilonEdge = Edge(EPS, lcfg.getLast(), rcfg.getHead())
 
-
-    epsilonEdge = Edge(EPS, lcfg.last, rcfg.head)
-
-    lcfg.last.left = epsilonEdge
-
+    (lcfg.getLast()).setLeft(epsilonEdge)
     return graph
 
 def cfg_amb(AST):
     graph = CFG()
-
     lcfg = create_cfg(AST.getLeft())
     rcfg = create_cfg(AST.getRight())
-
-
     beginningNode = Node()
     endNode = Node() 
 
+    beginningLeft = Edge(EPS, beginningNode, lcfg.getHead())
+    beginningRight = Edge(EPS, beginningNode, rcfg.getHead())
 
-    beginningLeft = Edge(EPS, beginningNode, lcfg.head)
-    beginningRight = Edge(EPS, beginningNode, rcfg.head)
+    beginningNode.setLeft(beginningLeft)
+    beginningNode.setRight(beginningRight)
 
-    beginningNode.left = beginningLeft
-    beginningNode.right = beginningRight
+    endingLeft = Edge(EPS, lcfg.getLast(), endNode)
+    endingRight = Edge(EPS, rcfg.getLast(), endNode)
 
-    endingLeft = Edge(EPS, lcfg.last, endNode)
-    endingRight = Edge(EPS, rcfg.last, endNode)
+    (lcfg.getLast()).setLeft(endingLeft)
+    (rcfg.getLast()).setLeft(endingLeft)
 
-    lcfg.last.left = endingLeft
-    rcfg.last.left = endingRight
-
-    graph.head = beginningNode
-    graph.last = endNode
+    graph.setHead(beginningNode)
+    graph.setLast(endNode)
     return graph
 
 def cfg_loop(AST):
-
     graph = CFG()
-
     loopcfg = create_cfg(AST.getLeft())
-
     whileNode = Node()
     
-    beginningEdge = Edge(EPS, whileNode, loopcfg.head)
+    beginningEdge = Edge(EPS, whileNode, loopcfg.getHead())
 
-    whileNode.left = beginningEdge
+    whileNode.setLeft(beginningEdge)
 
-    loopEdge = Edge(EPS, loopcfg.last, whileNode)
+    loopEdge = Edge(EPS, loopcfg.getLast(), whileNode)
 
-    loopcfg.last.left = loopEdge
+    (loopcfg.getLast()).setLeft(loopEdge)
 
-    graph.head = whileNode
-    graph.last = whileNode
+    graph.setHead(whileNode)
+    graph.setLast(whileNode)
     return graph 
