@@ -7,6 +7,11 @@ Helper functions for visualizing CFG and define constant keywords
 =========================================================================== """
 import StringIO
 
+# ADD SAMPLE ASTs TO THIS LIST FOR AUTO-TESTING
+sample_asts = ["../samples/if.txt", \
+               "../samples/while.txt"]
+
+
 # Atomic grammar nodes
 SEQ    = "SEQ"
 LOOP   = "LOOP"

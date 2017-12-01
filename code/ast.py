@@ -135,24 +135,20 @@ Return flattened string of while program defined in file at path f
 def get_AST(path):
     return _generate_AST(_flatten(path))
 
+''' ---------------------------------------------------------------------------
+Validates AST generation by printing AST string and tree (rotated 90 ccw).
+--------------------------------------------------------------------------- '''
+def test_AST_generation(ast_files):
+    for ast_path in ast_files:
+        print("\nTesting AST at path " + ast_path + ":")
+        print(_flatten(ast_path))
+        print("\nGenerated AST (rotated 90 degrees CCW):")
+        print(get_AST(ast_path).__str__())
+        print("\n")
+
 
 """ ======================================================================= """
 """ ================== TESTING ============================================ """
 """ ======================================================================= """
 if __name__=='__main__':
-    print("")
-    print(_flatten("../samples/if.txt"))
-    print("")
-    print("")
-    ast = get_AST("../samples/if.txt")
-    print(ast.__str__())
-    print("")
-    print("")
-    print("")
-    print("")
-    print(_flatten("../samples/while.txt"))
-    print("")
-    print("")
-    ast = get_AST("../samples/while.txt")
-    print(ast.__str__())
-    print("")
+    test_AST_generation(sample_asts)
