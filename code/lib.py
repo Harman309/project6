@@ -9,7 +9,8 @@ import StringIO
 
 # ADD SAMPLE ASTs TO THIS LIST FOR AUTO-TESTING
 sample_asts = ["../samples/if.txt", \
-               "../samples/while.txt"]
+               "../samples/while.txt", \
+               "../samples/if_NOT.txt"]
 
 
 # Atomic grammar nodes
@@ -34,7 +35,7 @@ GEQ    = ">="
 LEQ    = "<="
 
 # Epsilon transition
-EPS    = "epsilon_transition"
+EPS    = "E"
 
 # List of expr nodes
 EXPRS    = [TRUE, FALSE, NOT, EQ, NEQ, GT, LT, GEQ, LEQ]

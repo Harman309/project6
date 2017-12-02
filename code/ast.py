@@ -5,24 +5,21 @@ Author : Harman Sran
 
 Defines AST class that is While Program
 =========================================================================== """
-import sys
-from cfg import *
 from lib import *
 
 
 """ ======================================================================= """
-""" ================== PRIVATE CLASSES/ FUNCTIONS ========================= """
+""" ================== CLASSES/ PRIVATE FUNCTIONS ========================= """
 """ ======================================================================= """
 
 ''' ---------------------------------------------------------------------------
-Define an AST
+Define an AST (Abstract Syntax Tree) for While Programs
 --------------------------------------------------------------------------- '''
 class AST():
     def __init__(self, value):
         self._left     = None
         self._right    = None
         self._value    = value
-        self._isExpr   = value in EXPRS
 
     def getLeft(self):
         return self._left
@@ -32,9 +29,6 @@ class AST():
 
     def getValue(self):
         return self._value
-
-    def isExpr(self):
-        return self._isExpr
 
     def setLeft(self, ast):
         self._left = ast
@@ -70,8 +64,6 @@ Return AST object defined by well-formed while program in while_str
 def _generate_AST(wp):
     val = header(wp)
 
-    #print("AST for: " + val)
-
     # LOOP(STMT)
     if (val == LOOP):
         ast = AST(val)
@@ -80,7 +72,6 @@ def _generate_AST(wp):
     # AMB(LSTMT, RSTMT) / SEQ(LSTMT, RSTMT)
     elif (val in [AMB, SEQ]):
         ast = AST(val)
-
         ast.setLeft(_generate_AST(lbody(wp)))
         ast.setRight(_generate_AST(rbody(wp)))
 
@@ -92,7 +83,6 @@ def _generate_AST(wp):
     # ASSIGN(VAR, EXPR)
     elif (val == ASSIGN):
         ast = AST(val)
-        #ast.setLeft(lbody(wp))
         ast.setLeft(_EXPR_to_AST(lbody(wp)))
         ast.setRight(_EXPR_to_AST(rbody(wp)))
 
@@ -130,7 +120,7 @@ def _EXPR_to_AST(expr):
 """ ======================================================================= """
 
 ''' ---------------------------------------------------------------------------
-Return flattened string of while program defined in file at path f
+Return AST of while program defined in file at path f
 --------------------------------------------------------------------------- '''
 def get_AST(path):
     return _generate_AST(_flatten(path))
@@ -139,6 +129,7 @@ def get_AST(path):
 Validates AST generation by printing AST string and tree (rotated 90 ccw).
 --------------------------------------------------------------------------- '''
 def test_AST_generation(ast_files):
+    print("\nBeginning AST test; all AST file paths must be relative to ast.py")
     for ast_path in ast_files:
         print("\nTesting AST at path " + ast_path + ":")
         print(_flatten(ast_path))
@@ -146,6 +137,49 @@ def test_AST_generation(ast_files):
         print(get_AST(ast_path).__str__())
         print("\n")
 
+''' ---------------------------------------------------------------------------
+Given ASSIGN AST; return assignment string "VAR = EXPR" 
+--------------------------------------------------------------------------- '''
+def get_assignment_stmt(ast):
+    assert ast.getValue() == ASSIGN
+
+    var      = ast.getLeft()
+    expr_ast = ast.getRight()
+    expr     = expr_ast.getValue()
+
+    # ASSIGN(a, ...)
+    ret      = var.getValue() + " = "
+
+    if expr == NOT:
+        # ASSIGN(a, NOT(b))
+        return ret + expr + "(" + expr_ast.getLeft().getValue() + ")"
+
+    elif expr in BI_EXPRS:
+        # ASSIGN(a, b == c)
+        return ret + "(" + expr_ast.getLeft().getValue() + " " + expr + " " + expr_ast.getRight().getValue() + ")"
+
+    # ASSIGN(a, b | TRUE | FALSE)
+    return ret + expr
+
+''' ---------------------------------------------------------------------------
+Given ASSUME AST; return assignment string "VAR = EXPR" 
+--------------------------------------------------------------------------- '''
+def get_assumption_stmt(ast):
+    assert ast.getValue() in [ASSUME, NOT]
+
+    expr_ast = ast.getLeft()
+    expr     = expr_ast.getValue() 
+
+    if expr == NOT:
+        # ASSUME(NOT(...)) <=> NOT(ASSUME(...))
+        return expr + "(" + get_assumption_stmt(expr_ast) + ")"
+
+    elif expr in BI_EXPRS:
+        # Sub expressions a,b (e.g. a == b) must be atomic
+        # ... (e.g. { NOT(a) == b } should be rewritten to { a != b })
+        return expr_ast.getLeft().getValue() + " " + expr + " " + expr_ast.getRight().getValue() 
+
+    return expr # TRUE | FALSE | Boolean var
 
 """ ======================================================================= """
 """ ================== TESTING ============================================ """
