@@ -1,0 +1,7 @@
+SEQ(ASSIGN(i, 0),
+SEQ(ASSIGN(a, 0),
+SEQ(AMB(
+	SEQ(ASSUME(NOT(a != 0)), ASSIGN(b, 2)), 
+	SEQ(ASSUME(NOT(a == 0)), ASSIGN(b, 3))),
+SEQ(ASSIGN(i, a), 
+ASSIGN(a, b)))))
