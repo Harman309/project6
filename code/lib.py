@@ -114,11 +114,52 @@ def rbody(wp):
     return stmt_split(body(wp))[1]
 
 """ ======================================================================= """
-""" ================== CFG VISUALIZATION=================================== """
+""" ================== AST VISUALIZATION=================================== """
 """ ======================================================================= """
 def mkdir(dir):
     if not os.path.exists(dir):
         os.makedirs(dir)
+
+''' ---------------------------------------------------------------------------
+Fill dot object with AST node data
+--------------------------------------------------------------------------- '''
+def ast_to_dot(dot, ast):
+    # Add root
+    dot.node(ast.getID(), ast.getValue())
+
+    # Add left child to root
+    lchild = ast.getLeft()
+    if lchild:        
+        ast_to_dot(dot, lchild)
+        dot.edge(ast.getID(), lchild.getID())
+
+    # Add right child to root
+    rchild = ast.getRight()
+    if rchild:
+        ast_to_dot(dot, rchild)
+        dot.edge(ast.getID(), rchild.getID())
+
+''' ---------------------------------------------------------------------------
+Use graphViz to render AST and save in folder as name
+--------------------------------------------------------------------------- '''
+def visualize_ast(ast, name="ast", folder="asts/"):
+    # Create folder, and sub-folder for this ast - unless exists
+    afolder = folder + name + "/"
+    mkdir(folder)
+    mkdir(afolder)
+
+    # Generate DOT format graph, given AST
+    dot = Digraph(comment=name)
+    ast_to_dot(dot, ast)
+
+    # Render graph and save as { folder/name/name.gv; folder/name/name.pdf }
+    graph = afolder + name + ".gv"
+    dot.render(graph)
+    print("\nAST \'" + name + "\' saved to " + graph)
+
+""" ======================================================================= """
+""" ================== CFG VISUALIZATION=================================== """
+""" ======================================================================= """
 
 ''' ---------------------------------------------------------------------------
 Fill dot object with edge data
@@ -133,8 +174,8 @@ def populate_dot(dot, edges, show_eps):
 ''' ---------------------------------------------------------------------------
 Use graphViz to render graph cfg and save in folder as name
 --------------------------------------------------------------------------- '''
-def visualize_graph(cfg, name="graph", folder="graphs/", \
-                    show_epsilons=True, show_node_labels=True):
+def visualize_cfg(cfg, name="graph", folder="graphs/", \
+                  show_epsilons=True, show_node_labels=True):
     # Create folder, and sub-folder for this graph - unless exists
     gfolder = folder + name + "/"
     mkdir(folder)

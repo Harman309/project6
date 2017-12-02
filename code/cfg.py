@@ -315,7 +315,7 @@ def _generate_LOOP_CFG(ast):
 Return CFG of while program defined in AST
 --------------------------------------------------------------------------- '''
 def get_CFG(ast):
-    resetNodeID() # Ensure unique node ID for each node in cfg
+    resetNodeID() # Ensure unique node ID for each node
     return _generate_CFG(ast)
 
 ''' ---------------------------------------------------------------------------
@@ -326,10 +326,10 @@ def test_AST_to_CFG_conversion(ast_files, show_epsilons, show_node_labels):
     print("\nBeginning CFG test; all AST file paths must be relative to ast.py...")
     for ast_path in ast_files:
         ast = get_AST(ast_path)
-        visualize_graph(get_CFG(ast), \
-                        name=ast_path.split("/")[-1].split(".")[0], \
-                        show_epsilons=show_epsilons, \
-                        show_node_labels=show_node_labels)
+        visualize_cfg(get_CFG(ast), \
+                      name=ast_path.split("/")[-1].split(".")[0], \
+                      show_epsilons=show_epsilons, \
+                      show_node_labels=show_node_labels)
 
 
 """ ======================================================================= """
