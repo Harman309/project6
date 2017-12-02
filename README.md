@@ -1,6 +1,8 @@
 # CSC410: Project 6:
 ## Program Normalizer and Control Flow Graph Visualizer
 
+## Usage
+- Python 3 required (tested with Python 3.6.3); Python 2.* not supported
 
 ## Team
 - Michael Li

@@ -11,10 +11,6 @@ to a CFG
 from lib import *
 from ast import *
 
-from sets import Set
-
-#import graphviz as gv #TODO: Need to install
-
 
 """ ======================================================================= """
 """ ==================      CLASSES               ========================= """
@@ -24,11 +20,13 @@ from sets import Set
 Define an CFG (Control Flow Graph) for While Programs:
     - A wrapper around a singleton Entry and singleton Exit node
     - Forwards and Backwards traversable (entry->exit and also exit->entry)
+    - Holds edge set for easy visualization
 --------------------------------------------------------------------------- '''
 class CFG():
     def __init__(self):
         self._entryNode = None
         self._exitNode  = None
+        self._edgeSet   = set()
 
     def getEntryNode(self):
         return self._entryNode
@@ -36,11 +34,17 @@ class CFG():
     def getExitNode(self):
         return self._exitNode
 
+    def getEdgeSet(self):
+        return self._edgeSet
+
     def setEntryNode(self, node):
         self._entryNode = node
 
     def setExitNode(self, node):
         self._exitNode = node
+
+    def unionEdges(self, edges):
+        self._edgeSet = self._edgeSet | edges
 
 ''' ---------------------------------------------------------------------------
 Define a node in the CFG:
@@ -48,8 +52,12 @@ Define a node in the CFG:
 --------------------------------------------------------------------------- '''
 class Node():
     def __init__(self):
-        self._incoming  = Set()
-        self._outgoing = Set()
+        self._id = str(nextNodeID()); # unique; set once
+        self._incoming  = set()
+        self._outgoing = set()
+
+    def getID(self):
+        return self._id
 
     def getIncomingEdges(self):
         return self._incoming # Return private Set, not copy
@@ -151,6 +159,9 @@ def _generate_SEQ_CFG(ast):
     cfg.setEntryNode(pre.getEntryNode())
     cfg.setExitNode(post.getExitNode())
 
+    # Set of edges in CFG
+    cfg.unionEdges(pre.getEdgeSet() | post.getEdgeSet() | set([epsilonEdge]))
+
     return cfg
 
 ''' ---------------------------------------------------------------------------
@@ -175,6 +186,9 @@ def _generate_ASSIGN_CFG(ast):
     cfg.setEntryNode(entryNode)
     cfg.setExitNode(exitNode)
 
+    # Set of edges in CFG
+    cfg.unionEdges(set([edge]))
+
     return cfg
 
 ''' ---------------------------------------------------------------------------
@@ -198,6 +212,9 @@ def _generate_ASSUME_CFG(ast):
     # Encapsulate entry/ exit nodes in CFG, and return
     cfg.setEntryNode(entryNode)
     cfg.setExitNode(exitNode)
+
+    # Set of edges in CFG
+    cfg.unionEdges(set([edge]))
     
     return cfg
 
@@ -244,6 +261,12 @@ def _generate_AMB_CFG(ast):
     cfg.setEntryNode(entryNode)
     cfg.setExitNode(exitNode)
 
+    # Set of edges in CFG
+    cfg.unionEdges(lcfg.getEdgeSet() | rcfg.getEdgeSet() | set([entryLeftOutEdge,  \
+                                                                entryRightOutEdge, \
+                                                                exitLeftInEdge,    \
+                                                                exitRightInEdge]))
+
     return cfg
 
 ''' ---------------------------------------------------------------------------
@@ -279,6 +302,9 @@ def _generate_LOOP_CFG(ast):
     cfg.setEntryNode(whileNode)
     cfg.setExitNode(whileNode)
 
+    # Set of edges in CFG
+    cfg.unionEdges(body_cfg.getEdgeSet() | set([loopEntryEdge, loopExitEdge]))
+
     return cfg
 
 """ ======================================================================= """
@@ -289,23 +315,39 @@ def _generate_LOOP_CFG(ast):
 Return CFG of while program defined in AST
 --------------------------------------------------------------------------- '''
 def get_CFG(ast):
+    resetNodeID() # Ensure unique node ID for each node in cfg
     return _generate_CFG(ast)
 
 ''' ---------------------------------------------------------------------------
 Validates AST to CFG conversion by converting all ASTs defined in files to CFGs
-and saves resulting CFGs using GraphViz
+and saves resulting CFGs using GraphViz for visualization
 --------------------------------------------------------------------------- '''
-def test_AST_to_CFG_conversion(ast_files):
-    print("\nBeginning CFG test; all AST file paths must be relative to ast.py")
+def test_AST_to_CFG_conversion(ast_files, show_epsilons, show_node_labels):
+    print("\nBeginning CFG test; all AST file paths must be relative to ast.py...")
     for ast_path in ast_files:
-        print("\nTesting AST to CFG conversion for AST at path " + ast_path + ":")
         ast = get_AST(ast_path)
-        cfg = get_CFG(ast)
-        assert cfg is not None
-        print("\nSuccess! TODO: Print out CFG in GraphViz\n")
+        visualize_graph(get_CFG(ast), \
+                        name=ast_path.split("/")[-1].split(".")[0], \
+                        show_epsilons=show_epsilons, \
+                        show_node_labels=show_node_labels)
+
 
 """ ======================================================================= """
 """ ================== TESTING ============================================ """
 """ ======================================================================= """
 if __name__=='__main__':
-    test_AST_to_CFG_conversion(sample_asts)
+    if len(sys.argv) > 2:
+        print("Usage: > python3 cfg.py [en]\n" + \
+              "         -e : Label empty transitions\n" + \
+              "         -n : Label nodes")
+        exit()
+    show_epsilons   = False
+    show_node_labels = False
+    if len(sys.argv) == 2:
+        show_epsilons   = "e" in sys.argv[1]
+        show_node_labels = "n" in sys.argv[1]
+
+    print("\nShowing epsilons    (enable by passing <e>): " + str(show_epsilons))
+    print("\nShowing node labels (enable by passing <n>): " + str(show_node_labels))
+
+    test_AST_to_CFG_conversion(sample_asts, show_epsilons, show_node_labels)

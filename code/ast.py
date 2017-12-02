@@ -120,24 +120,6 @@ def _EXPR_to_AST(expr):
 """ ======================================================================= """
 
 ''' ---------------------------------------------------------------------------
-Return AST of while program defined in file at path f
---------------------------------------------------------------------------- '''
-def get_AST(path):
-    return _generate_AST(_flatten(path))
-
-''' ---------------------------------------------------------------------------
-Validates AST generation by printing AST string and tree (rotated 90 ccw).
---------------------------------------------------------------------------- '''
-def test_AST_generation(ast_files):
-    print("\nBeginning AST test; all AST file paths must be relative to ast.py")
-    for ast_path in ast_files:
-        print("\nTesting AST at path " + ast_path + ":")
-        print(_flatten(ast_path))
-        print("\nGenerated AST (rotated 90 degrees CCW):")
-        print(get_AST(ast_path).__str__())
-        print("\n")
-
-''' ---------------------------------------------------------------------------
 Given ASSIGN AST; return assignment string "VAR = EXPR" 
 --------------------------------------------------------------------------- '''
 def get_assignment_stmt(ast):
@@ -180,6 +162,24 @@ def get_assumption_stmt(ast):
         return expr_ast.getLeft().getValue() + " " + expr + " " + expr_ast.getRight().getValue() 
 
     return expr # TRUE | FALSE | Boolean var
+
+''' ---------------------------------------------------------------------------
+Return AST of while program defined in file at path f
+--------------------------------------------------------------------------- '''
+def get_AST(path):
+    return _generate_AST(_flatten(path))
+
+''' ---------------------------------------------------------------------------
+Validates AST generation by printing AST string and tree (rotated 90 ccw).
+--------------------------------------------------------------------------- '''
+def test_AST_generation(ast_files):
+    print("\nBeginning AST test; all AST file paths must be relative to ast.py")
+    for ast_path in ast_files:
+        print("\nTesting AST at path " + ast_path + ":")
+        print(_flatten(ast_path))
+        print("\nGenerated AST (rotated 90 degrees CCW):")
+        print(get_AST(ast_path).__str__())
+        print("\n")
 
 """ ======================================================================= """
 """ ================== TESTING ============================================ """

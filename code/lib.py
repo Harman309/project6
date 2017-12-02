@@ -5,13 +5,20 @@ Author : Harman Sran
 
 Helper functions for visualizing CFG and define constant keywords
 =========================================================================== """
-import StringIO
+from io import StringIO
+from graphviz import Digraph
+import os
+import sys
 
 # ADD SAMPLE ASTs TO THIS LIST FOR AUTO-TESTING
 sample_asts = ["../samples/if.txt", \
                "../samples/while.txt", \
                "../samples/if_NOT.txt"]
 
+
+""" ======================================================================= """
+""" ==================     MACROS       =================================== """
+""" ======================================================================= """
 
 # Atomic grammar nodes
 SEQ    = "SEQ"
@@ -43,8 +50,32 @@ BI_EXPRS = [EQ, NEQ, GT, LT, GEQ, LEQ]
 
 AST_NODES = ATOMS + EXPRS
 
+""" ======================================================================= """
+""" ================== NODE ID HELPER   =================================== """
+""" ======================================================================= """
 
-# STRING HELPERS
+# Global Node ID; used to uniquely identify graph nodes
+_g_NID = 0
+
+# Increment global node ID
+def increment_global_nodeID():
+    global _g_NID
+    _g_NID = _g_NID + 1
+
+# Get next global node ID; increment to keep unique
+def nextNodeID():
+    next_id = _g_NID
+    increment_global_nodeID()
+    return next_id
+
+# Reset global node ID
+def resetNodeID():
+    global _g_NID
+    _g_NID = 0
+
+""" ======================================================================= """
+""" ================== STRING HELPERS   =================================== """
+""" ======================================================================= """
 
 # SEQ(...) -> Return "SEQ"
 def header(wp):
@@ -55,7 +86,8 @@ def body(wp):
     return wp[wp.find("(")+1 : wp.rfind(")")]
 
 # Helper for splitting "LSTMT, RSTMT" - *STMT are arbitrarily complex
-# From: https://stackoverflow.com/questions/26808913/split-string-at-commas-except-when-in-bracket-environment
+# From: https://stackoverflow.com/questions/26808913/split-string-at- \
+#           commas-except-when-in-bracket-environment
 def stmt_split(body):
     parts = []
     bracket_level = 0
@@ -80,3 +112,43 @@ def lbody(wp):
 # SEQ(LSTMT, RSTMT) -> Return RSTMT
 def rbody(wp):
     return stmt_split(body(wp))[1]
+
+""" ======================================================================= """
+""" ================== CFG VISUALIZATION=================================== """
+""" ======================================================================= """
+def mkdir(dir):
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
+''' ---------------------------------------------------------------------------
+Fill dot object with edge data
+--------------------------------------------------------------------------- '''
+def populate_dot(dot, edges, show_eps):
+    for e in edges:
+        dot.edge(e.getSource().getID(), e.getEndpoint().getID(), \
+                 # Hide epsilons
+                 label= "" if (e.getData() == EPS) and not show_eps else \
+                        " " + e.getData() + " ")
+
+''' ---------------------------------------------------------------------------
+Use graphViz to render graph cfg and save in folder as name
+--------------------------------------------------------------------------- '''
+def visualize_graph(cfg, name="graph", folder="graphs/", \
+                    show_epsilons=True, show_node_labels=True):
+    # Create folder, and sub-folder for this graph - unless exists
+    gfolder = folder + name + "/"
+    mkdir(folder)
+    mkdir(gfolder)
+
+    # Generate DOT format graph, given cfg's Edge set
+    dot = Digraph(comment=name)
+    populate_dot(dot, cfg.getEdgeSet(), show_epsilons)
+
+    # Hide node labels
+    if not show_node_labels:
+        dot.node_attr["label"] = ""
+
+    # Render graph and save as { folder/name/name.gv; folder/name/name.pdf }
+    graph = gfolder + name + ".gv"
+    dot.render(graph)
+    print("\nGraph \'" + name + "\' saved to " + graph)
