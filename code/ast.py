@@ -4,6 +4,9 @@ CSC410 : Project 6: Program Normalizer and Control Flow Graph Visualizer
 Author : Harman Sran
 
 Defines AST class that is While Program
+
+Provides functionality for converting from an CFG (as defined in cfg.py)
+to an AST
 =========================================================================== """
 from lib import *
 
@@ -173,24 +176,3 @@ Return AST of while program defined in file at path f
 def get_AST(path):
     resetNodeID() # Ensure unique node ID for each node
     return _generate_AST(_flatten(path))
-
-''' ---------------------------------------------------------------------------
-Validates AST generation by printing AST string and tree (rotated 90 ccw).
---------------------------------------------------------------------------- '''
-def test_AST_generation(ast_files):
-    print("\nBeginning AST test; all AST file paths must be relative to ast.py")
-    for ast_path in ast_files:
-        visualize_ast(get_AST(ast_path), \
-                      name=ast_path.split("/")[-1].split(".")[0])
-
-        # print("\nTesting AST at path " + ast_path + ":")
-        # print(_flatten(ast_path))
-        # print("\nGenerated AST (rotated 90 degrees CCW):")
-        # print(get_AST(ast_path).__str__())
-        # print("\n")
-
-""" ======================================================================= """
-""" ================== TESTING ============================================ """
-""" ======================================================================= """
-if __name__=='__main__':
-    test_AST_generation(sample_asts)

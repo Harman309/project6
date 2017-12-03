@@ -3,6 +3,12 @@
 
 ## Usage
 - Python 3 required (tested with Python 3.6.3); Python 2.* not supported
+- Add AST files to test in sample/
+- Add sample files to sample_asts list in lib.py
+- Test all components together, by running (optional flag 'e' for epsilon labels; and flag 'n' for node labels):
+> python3 test.py en
+- Follow output to retrieve results
+- Successive tests in test.py repeat prior tests for completeness; comment out prior tests to not generate intermediate files (e.g. remove all but normalization test to just compute and visualize the normalized WHILE programs)
 
 ## Team
 - Michael Li
@@ -13,29 +19,23 @@
 ### Component -1
 - ast.txt -> AST object
 - Handled by ast.py
-- Owner: **Harman**
 
 ### Component 1
 - AST object -> CFG object
 - Handled by cfg.py
-- Owner: **Michael**
 
-### Component 3
-- CFG object -> AST<sup>G</sup> object
-- Handled by astg.py
-- Owner: **Joey**
-
-### Component 4
-- AST<sup>G</sup> object -> AST object
-- Handled by ast.py
-- Owner: **Joey**
+### Component 3 and 4
+- CFG object -> AST object
+- Handled by conv.py
 
 ### Component 5
 - AST object -> AST* object
 - Handled by norm.py
-- Owner: **Ryan**
 
 ### Component 6
-- Visualize CFG object
+- Visualize CFG (and AST) object
 - Handled by lib.py
-- Owner: **Harman**
+
+### Validate
+- Test all components
+- Handled by test.py

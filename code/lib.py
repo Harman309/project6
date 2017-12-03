@@ -3,14 +3,15 @@ File   : lib.py
 CSC410 : Project 6: Program Normalizer and Control Flow Graph Visualizer
 Author : Harman Sran
 
-Helper functions for visualizing CFG and define constant keywords
+Helper functions for visualizing AST/ CFG and define constant keywords
 =========================================================================== """
 from io import StringIO
 from graphviz import Digraph
 import os
 import sys
 
-# ADD SAMPLE ASTs TO THIS LIST FOR AUTO-TESTING
+# ADD SAMPLE ASTs TO THIS LIST FOR AUTO-TESTING IN 'test.py'
+# File path must be relative to this dir (code/)
 sample_asts = ["../samples/if.txt", \
                "../samples/while.txt", \
                "../samples/if_NOT.txt"]
@@ -49,6 +50,15 @@ EXPRS    = [TRUE, FALSE, NOT, EQ, NEQ, GT, LT, GEQ, LEQ]
 BI_EXPRS = [EQ, NEQ, GT, LT, GEQ, LEQ]
 
 AST_NODES = ATOMS + EXPRS
+
+# Special edge types; used for CFG to AST conversion
+LOOP_BACK  = "LOOP_BACK_EDGE"
+LOOP_ENTRY = "LOOP_ENTRY_EDGE"
+AMB_SPLIT  = "AMB_SPLIT_EDGE"
+AMB_JOIN   = "AMB_JOIN_EDGE"
+SEQ_TRANS  = "SEQ_EDGE"
+
+EDGE_TYPES = [LOOP_BACK, LOOP_ENTRY, AMB_SPLIT, AMB_JOIN, SEQ_TRANS]
 
 """ ======================================================================= """
 """ ================== NODE ID HELPER   =================================== """
@@ -192,4 +202,4 @@ def visualize_cfg(cfg, name="graph", folder="graphs/", \
     # Render graph and save as { folder/name/name.gv; folder/name/name.pdf }
     graph = gfolder + name + ".gv"
     dot.render(graph)
-    print("\nGraph \'" + name + "\' saved to " + graph)
+    print("\nCFG \'" + name + "\' saved to " + graph)
