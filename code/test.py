@@ -20,7 +20,7 @@ from conv import *
 Validates AST generation by visualizing using GV
 --------------------------------------------------------------------------- '''
 def test_AST_generation(ast_files):
-    print("\nBeginning AST generation; all AST file paths must be relative to test.py!")
+    print("\nBeginning AST generation test; all AST file paths must be relative to test.py!")
     for ast_path in ast_files:
         visualize_ast(get_AST(ast_path), \
                       name=ast_path.split("/")[-1].split(".")[0])
