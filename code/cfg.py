@@ -51,18 +51,29 @@ Define a node in the CFG:
     - A wrapper around sets of Incoming and Outgoing edges
 --------------------------------------------------------------------------- '''
 class Node():
-    def __init__(self, atomic_type=None):
+    def __init__(self, atomic_type=None, exit_node=None):
         self._id = str(nextNodeID()); # unique; set once
         
         # Optionally store atom this node is head for (SEQ, LOOP, AMB, ASSUME, ASSIGN)
         assert atomic_type is None or atomic_type in ATOMS
-        self._type = atomic_type 
-        
+        self._type = atomic_type
+
+        # Special case for AMB (entry) nodes; store the exit node
+        if exit_node is not None:
+            assert self._type == AMB
+            self._amb_exit = exit_node
+        else:
+            self._amb_exit = None
+
         self._incoming = set()
         self._outgoing = set()
 
     def getID(self):
         return self._id
+
+    def getAMBExit(self):
+        assert self.getType() == AMB
+        return self._amb_exit
 
     def getIncomingEdges(self):
         return self._incoming
@@ -263,9 +274,9 @@ AMB(LSTMT, RSTMT) ==>
 --------------------------------------------------------------------------- '''
 def _generate_AMB_CFG(ast):
     cfg = CFG()
-    entryNode = Node(AMB)
     exitNode  = Node() 
-
+    entryNode = Node(AMB, exitNode)
+    
     # Recursively generate the two sub-CFGs for LSTMT and RSTMT
     lcfg = _generate_CFG(ast.getLeft())
     rcfg = _generate_CFG(ast.getRight())
