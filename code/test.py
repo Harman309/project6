@@ -13,6 +13,7 @@ Tests functionality of:
 from lib import *
 from ast import *
 from cfg import *
+from conv import *
 
 
 ''' ---------------------------------------------------------------------------
@@ -42,15 +43,20 @@ Validates CFG to AST conversion by converting all ASTs defined in files to CFGs
 and then converts the CFGs to ASTs (from scratch), and saves resulting ASTs 
 using GraphViz for visualization
 --------------------------------------------------------------------------- '''
-def test_CFG_to_AST_conversion(sample_asts):
-    print("\nTODO")
-    return None
+def test_CFG_to_AST_conversion(ast_files):
+    print("\nBeginning CFG to AST conversion test; all AST file paths must be relative to test.py!")
+    for ast_path in ast_files:
+        ast = get_AST(ast_path)
+        cfg = get_CFG(ast)
+        visualize_ast(to_ast(cfg), \
+                      name=ast_path.split("/")[-1].split(".")[0], \
+                      folder="cfg_to_ast/")
 
 ''' ---------------------------------------------------------------------------
 Validates AST normalization by normalizing (removing all but one back edge)
 of all ASTs passed in
 --------------------------------------------------------------------------- '''
-def test_AST_normalization(sample_asts):
+def test_AST_normalization(ast_files):
     print("\nTODO")
     return None
 

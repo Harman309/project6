@@ -1,0 +1,68 @@
+// if
+digraph {
+	21 [label=SEQ]
+	18 [label=ASSIGN]
+	19 [label=i]
+	18 -> 19
+	20 [label=0]
+	18 -> 20
+	21 -> 18
+	25 [label=SEQ]
+	22 [label=ASSIGN]
+	23 [label=a]
+	22 -> 23
+	24 [label=0]
+	22 -> 24
+	25 -> 22
+	43 [label=SEQ]
+	26 [label=AMB]
+	31 [label=SEQ]
+	27 [label=ASSUME]
+	28 [label="=="]
+	29 [label="a "]
+	28 -> 29
+	30 [label=" 0"]
+	28 -> 30
+	27 -> 28
+	31 -> 27
+	32 [label=ASSIGN]
+	33 [label=b]
+	32 -> 33
+	34 [label=3]
+	32 -> 34
+	31 -> 32
+	26 -> 31
+	39 [label=SEQ]
+	35 [label=ASSUME]
+	36 [label="!="]
+	37 [label="a "]
+	36 -> 37
+	38 [label=" 0"]
+	36 -> 38
+	35 -> 36
+	39 -> 35
+	40 [label=ASSIGN]
+	41 [label=b]
+	40 -> 41
+	42 [label=2]
+	40 -> 42
+	39 -> 40
+	26 -> 39
+	43 -> 26
+	47 [label=SEQ]
+	44 [label=ASSIGN]
+	45 [label=i]
+	44 -> 45
+	46 [label=a]
+	44 -> 46
+	47 -> 44
+	48 [label=ASSIGN]
+	49 [label=a]
+	48 -> 49
+	50 [label=b]
+	48 -> 50
+	47 -> 48
+	43 -> 47
+	25 -> 43
+	21 -> 25
+}

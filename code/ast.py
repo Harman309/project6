@@ -70,26 +70,23 @@ Return AST object defined by well-formed while program in while_str
 --------------------------------------------------------------------------- '''
 def _generate_AST(wp):
     val = header(wp)
+    ast = AST(val)
 
     # LOOP(STMT)
     if (val == LOOP):
-        ast = AST(val)
         ast.setLeft(_generate_AST(body(wp)))
     
     # AMB(LSTMT, RSTMT) / SEQ(LSTMT, RSTMT)
     elif (val in [AMB, SEQ]):
-        ast = AST(val)
         ast.setLeft(_generate_AST(lbody(wp)))
         ast.setRight(_generate_AST(rbody(wp)))
 
     # ASSUME(EXPR)
     elif (val == ASSUME):
-        ast = AST(val)
         ast.setLeft(_EXPR_to_AST(body(wp)))
 
     # ASSIGN(VAR, EXPR)
     elif (val == ASSIGN):
-        ast = AST(val)
         ast.setLeft(_EXPR_to_AST(lbody(wp)))
         ast.setRight(_EXPR_to_AST(rbody(wp)))
 
@@ -151,7 +148,22 @@ def get_assignment_stmt(ast):
     return ret + expr
 
 ''' ---------------------------------------------------------------------------
-Given ASSUME AST; return assignment string "VAR = EXPR" 
+Given assignment string "VAR = EXPR"; return ASSIGN AST
+--------------------------------------------------------------------------- '''
+def get_assignment_ast(stmt):
+    ast  = AST(ASSIGN)
+    toks = stmt.split(" = ")
+    
+    var  = toks[0]
+    ast.setLeft(_EXPR_to_AST(var))
+
+    expr = toks[1]
+    ast.setRight(_EXPR_to_AST(expr))
+
+    return ast
+
+''' ---------------------------------------------------------------------------
+Given ASSUME AST; return assumption string "EXPR" 
 --------------------------------------------------------------------------- '''
 def get_assumption_stmt(ast):
     assert ast.getValue() in [ASSUME, NOT]
@@ -169,6 +181,14 @@ def get_assumption_stmt(ast):
         return expr_ast.getLeft().getValue() + " " + expr + " " + expr_ast.getRight().getValue() 
 
     return expr # TRUE | FALSE | Boolean var
+
+''' ---------------------------------------------------------------------------
+Given assumption string "EXPR"; return ASSUME AST
+--------------------------------------------------------------------------- '''
+def get_assumption_ast(stmt):
+    ast = AST(ASSUME)
+    ast.setLeft(_EXPR_to_AST(stmt))
+    return ast
 
 ''' ---------------------------------------------------------------------------
 Return AST of while program defined in file at path f

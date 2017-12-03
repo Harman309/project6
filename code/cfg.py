@@ -94,6 +94,16 @@ class Node():
             print("Warning; adding non-edge to outgoing set: " + edge.__str__())
         self._outgoing.add(edge)
 
+    def delIncomingEdge(self, edge):
+        if not isinstance(edge, Edge):
+            print("Warning; removing non-edge from incoming set: " + edge.__str__())
+        self._incoming.remove(edge)
+
+    def delOutgoingEdge(self, edge):
+        if not isinstance(edge, Edge):
+            print("Warning; removing non-edge from outgoing set: " + edge.__str__())
+        self._outgoing.remove(edge)
+
     def setType(atomic_type):
         assert atomic_type is None or atomic_type in ATOMS
         self._type = atomic_type 
