@@ -1,0 +1,15 @@
+SEQ(ASSIGN(i, 0),
+SEQ(ASSIGN(j, -1),
+SEQ(ASSIGN(l, -2),
+SEQ(LOOP(
+	SEQ(ASSUME(i == 0), SEQ(ASSIGN(k, 0), 
+	SEQ(LOOP(
+		SEQ(ASSUME(j != 0), SEQ(ASSIGN(k, 1), 
+		SEQ(LOOP(
+			SEQ(ASSUME(l != 0), ASSIGN(k, 2))), 
+			SEQ(ASSUME(l == 0), ASSIGN(m, 0)))))),
+	SEQ(ASSUME(j == 0), ASSIGN(m, 1)))))),
+SEQ(ASSUME(i != 0), ASSIGN(m, 2))))))
+							
+
+

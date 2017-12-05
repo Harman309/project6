@@ -1,0 +1,16 @@
+SEQ(ASSIGN(a, 0),
+SEQ(ASSIGN(b, 0),
+SEQ(AMB(
+	SEQ(ASSUME(a != 0), SEQ(LOOP(
+							SEQ(ASSUME(b != 0), ASSIGN(c, 3))),
+						SEQ(ASSUME(b == 0), ASSIGN(i, c)))),
+	
+	SEQ(ASSUME(a == 0), SEQ(LOOP(
+							SEQ(ASSUME(b >= 0), ASSIGN(c, 6))),
+						SEQ(ASSUME(b < 0), ASSIGN(i, a))))),
+
+SEQ(LOOP(
+		SEQ(ASSUME(i == 0), ASSIGN(z, -1))),
+SEQ(ASSUME(i !=0), ASSIGN(b, z)))))) 
+
+

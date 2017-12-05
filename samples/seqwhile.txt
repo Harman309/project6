@@ -1,0 +1,12 @@
+SEQ(ASSIGN(a, 1),
+SEQ(ASSIGN(b, 2),
+SEQ(ASSIGN(c, 3),
+SEQ(LOOP(
+	SEQ(ASSUME(a != 0), ASSIGN(d, 10))),
+SEQ(ASSUME(a == 0), 
+SEQ(LOOP(
+	SEQ(ASSUME(b != 0), ASSIGN(d, 20))),
+SEQ(ASSUME(b == 0), 
+SEQ(LOOP(
+	SEQ(ASSUME(c != 0), ASSIGN(d, 30))),
+ASSIGN(d, 40)))))))))
