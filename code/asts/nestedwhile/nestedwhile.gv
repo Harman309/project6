@@ -1,0 +1,138 @@
+// nestedwhile
+digraph {
+	0 [label=SEQ]
+	1 [label=ASSIGN]
+	2 [label=i]
+	1 -> 2
+	3 [label=0]
+	1 -> 3
+	0 -> 1
+	4 [label=SEQ]
+	5 [label=ASSIGN]
+	6 [label=j]
+	5 -> 6
+	7 [label=-1]
+	5 -> 7
+	4 -> 5
+	8 [label=SEQ]
+	9 [label=ASSIGN]
+	10 [label=l]
+	9 -> 10
+	11 [label=-2]
+	9 -> 11
+	8 -> 9
+	12 [label=SEQ]
+	13 [label=LOOP]
+	14 [label=SEQ]
+	15 [label=ASSUME]
+	16 [label="=="]
+	17 [label=i]
+	16 -> 17
+	18 [label=0]
+	16 -> 18
+	15 -> 16
+	14 -> 15
+	19 [label=SEQ]
+	20 [label=ASSIGN]
+	21 [label=k]
+	20 -> 21
+	22 [label=0]
+	20 -> 22
+	19 -> 20
+	23 [label=SEQ]
+	24 [label=LOOP]
+	25 [label=SEQ]
+	26 [label=ASSUME]
+	27 [label="!="]
+	28 [label=j]
+	27 -> 28
+	29 [label=0]
+	27 -> 29
+	26 -> 27
+	25 -> 26
+	30 [label=SEQ]
+	31 [label=ASSIGN]
+	32 [label=k]
+	31 -> 32
+	33 [label=1]
+	31 -> 33
+	30 -> 31
+	34 [label=SEQ]
+	35 [label=LOOP]
+	36 [label=SEQ]
+	37 [label=ASSUME]
+	38 [label="!="]
+	39 [label=l]
+	38 -> 39
+	40 [label=0]
+	38 -> 40
+	37 -> 38
+	36 -> 37
+	41 [label=ASSIGN]
+	42 [label=k]
+	41 -> 42
+	43 [label=2]
+	41 -> 43
+	36 -> 41
+	35 -> 36
+	34 -> 35
+	44 [label=SEQ]
+	45 [label=ASSUME]
+	46 [label="=="]
+	47 [label=l]
+	46 -> 47
+	48 [label=0]
+	46 -> 48
+	45 -> 46
+	44 -> 45
+	49 [label=ASSIGN]
+	50 [label=m]
+	49 -> 50
+	51 [label=0]
+	49 -> 51
+	44 -> 49
+	34 -> 44
+	30 -> 34
+	25 -> 30
+	24 -> 25
+	23 -> 24
+	52 [label=SEQ]
+	53 [label=ASSUME]
+	54 [label="=="]
+	55 [label=j]
+	54 -> 55
+	56 [label=0]
+	54 -> 56
+	53 -> 54
+	52 -> 53
+	57 [label=ASSIGN]
+	58 [label=m]
+	57 -> 58
+	59 [label=1]
+	57 -> 59
+	52 -> 57
+	23 -> 52
+	19 -> 23
+	14 -> 19
+	13 -> 14
+	12 -> 13
+	60 [label=SEQ]
+	61 [label=ASSUME]
+	62 [label="!="]
+	63 [label=i]
+	62 -> 63
+	64 [label=0]
+	62 -> 64
+	61 -> 62
+	60 -> 61
+	65 [label=ASSIGN]
+	66 [label=m]
+	65 -> 66
+	67 [label=2]
+	65 -> 67
+	60 -> 65
+	12 -> 60
+	8 -> 12
+	4 -> 8
+	0 -> 4
+}

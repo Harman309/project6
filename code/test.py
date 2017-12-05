@@ -15,6 +15,14 @@ from ast import *
 from cfg import *
 from conv import *
 
+# ADD SAMPLE ASTs TO THIS LIST FOR AUTO-TESTING IN 'test.py'
+# File path must be relative to this dir (code/)
+sample_asts = ["../samples/if.txt", \
+               "../samples/while.txt", \
+               "../samples/if_NOT.txt", \
+               "../samples/seqwhile.txt", \
+               "../samples/nestedwhile.txt", \
+               "../samples/ambwhile.txt"]
 
 ''' ---------------------------------------------------------------------------
 Validates AST generation by visualizing using GV
@@ -61,7 +69,6 @@ def test_AST_normalization(ast_files):
     return None
 
 # Run tests to validate component functionality
-# NOTE: To test new ASTs, add them to 'sample_asts' list in lib.py
 if __name__=='__main__':
 
     ''' SET UP '''

@@ -10,12 +10,6 @@ from graphviz import Digraph
 import os
 import sys
 
-# ADD SAMPLE ASTs TO THIS LIST FOR AUTO-TESTING IN 'test.py'
-# File path must be relative to this dir (code/)
-sample_asts = ["../samples/if.txt", \
-               "../samples/while.txt", \
-               "../samples/if_NOT.txt"]
-
 
 """ ======================================================================= """
 """ ==================     MACROS       =================================== """

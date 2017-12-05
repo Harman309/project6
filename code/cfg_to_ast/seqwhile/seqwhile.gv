@@ -1,0 +1,112 @@
+// seqwhile
+digraph {
+	30 [label=SEQ]
+	27 [label=ASSIGN]
+	28 [label=a]
+	27 -> 28
+	29 [label=1]
+	27 -> 29
+	30 -> 27
+	34 [label=SEQ]
+	31 [label=ASSIGN]
+	32 [label=b]
+	31 -> 32
+	33 [label=2]
+	31 -> 33
+	34 -> 31
+	38 [label=SEQ]
+	35 [label=ASSIGN]
+	36 [label=c]
+	35 -> 36
+	37 [label=3]
+	35 -> 37
+	38 -> 35
+	48 [label=SEQ]
+	39 [label=LOOP]
+	44 [label=SEQ]
+	40 [label=ASSUME]
+	41 [label="!="]
+	42 [label="a "]
+	41 -> 42
+	43 [label=" 0"]
+	41 -> 43
+	40 -> 41
+	44 -> 40
+	45 [label=ASSIGN]
+	46 [label=d]
+	45 -> 46
+	47 [label=10]
+	45 -> 47
+	44 -> 45
+	39 -> 44
+	48 -> 39
+	53 [label=SEQ]
+	49 [label=ASSUME]
+	50 [label="=="]
+	51 [label="a "]
+	50 -> 51
+	52 [label=" 0"]
+	50 -> 52
+	49 -> 50
+	53 -> 49
+	63 [label=SEQ]
+	54 [label=LOOP]
+	59 [label=SEQ]
+	55 [label=ASSUME]
+	56 [label="!="]
+	57 [label="b "]
+	56 -> 57
+	58 [label=" 0"]
+	56 -> 58
+	55 -> 56
+	59 -> 55
+	60 [label=ASSIGN]
+	61 [label=d]
+	60 -> 61
+	62 [label=20]
+	60 -> 62
+	59 -> 60
+	54 -> 59
+	63 -> 54
+	68 [label=SEQ]
+	64 [label=ASSUME]
+	65 [label="=="]
+	66 [label="b "]
+	65 -> 66
+	67 [label=" 0"]
+	65 -> 67
+	64 -> 65
+	68 -> 64
+	78 [label=SEQ]
+	69 [label=LOOP]
+	74 [label=SEQ]
+	70 [label=ASSUME]
+	71 [label="!="]
+	72 [label="c "]
+	71 -> 72
+	73 [label=" 0"]
+	71 -> 73
+	70 -> 71
+	74 -> 70
+	75 [label=ASSIGN]
+	76 [label=d]
+	75 -> 76
+	77 [label=30]
+	75 -> 77
+	74 -> 75
+	69 -> 74
+	78 -> 69
+	79 [label=ASSIGN]
+	80 [label=d]
+	79 -> 80
+	81 [label=40]
+	79 -> 81
+	78 -> 79
+	68 -> 78
+	63 -> 68
+	53 -> 63
+	48 -> 53
+	38 -> 48
+	34 -> 38
+	30 -> 34
+}
