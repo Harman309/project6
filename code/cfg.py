@@ -46,6 +46,9 @@ class CFG():
     def unionEdges(self, edges):
         self._edgeSet = self._edgeSet | edges
 
+    def removeEdges(self, edges):
+        self._edgeSet = self._edgeSet - edges
+
 ''' ---------------------------------------------------------------------------
 Define a node in the CFG:
     - A wrapper around sets of Incoming and Outgoing edges
@@ -135,6 +138,12 @@ class Edge():
 
     def getData(self):
         return self._data
+
+    def setSource(self, node):
+        self._source = node
+
+    def setEndpoint(self, node):
+        self._endpoint = node
 
     def setType(edge_type):
         assert edge_type is None or edge_type in EDGE_TYPES

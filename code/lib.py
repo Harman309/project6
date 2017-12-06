@@ -54,6 +54,8 @@ SEQ_TRANS  = "SEQ_EDGE"
 
 EDGE_TYPES = [LOOP_BACK, LOOP_ENTRY, AMB_SPLIT, AMB_JOIN, SEQ_TRANS]
 
+# IMPORTANT: Variable names beginning with _flag are invalid
+flag_name = "_flag"
 """ ======================================================================= """
 """ ================== NODE ID HELPER   =================================== """
 """ ======================================================================= """
@@ -76,6 +78,29 @@ def nextNodeID():
 def resetNodeID():
     global _g_NID
     _g_NID = 0
+
+""" ======================================================================= """
+""" ================== FLAG VAR NAME    =================================== """
+""" ======================================================================= """
+
+# Global Flag variable name; used to add new flag variables
+_g_flag = flag_name + "_0"
+
+# Increment flag variable name
+def increment_global_flag():
+    global _g_flag
+    _g_flag = flag_name + "_" + str(int(_g_flag.split("_")[-1]) + 1)
+
+# Get next global flag name; increment to keep unique
+def nextFlagName():
+    next_flag = _g_flag
+    increment_global_flag()
+    return next_flag
+
+# Reset global flag names
+def resetFlags():
+    global _g_flag
+    _g_flag = flag_name + "_0"
 
 """ ======================================================================= """
 """ ================== STRING HELPERS   =================================== """
@@ -178,7 +203,7 @@ def populate_dot(dot, edges, show_eps):
 ''' ---------------------------------------------------------------------------
 Use graphViz to render graph cfg and save in folder as name
 --------------------------------------------------------------------------- '''
-def visualize_cfg(cfg, name="graph", folder="graphs/", \
+def visualize_cfg(cfg, name="cfg", folder="cfgs/", \
                   show_epsilons=True, show_node_labels=True):
     # Create folder, and sub-folder for this graph - unless exists
     gfolder = folder + name + "/"
