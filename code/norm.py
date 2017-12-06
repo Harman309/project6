@@ -186,8 +186,7 @@ def _normalize_seq_cfg(cfg):
             if first_while_node:
                 second_while_node = node
                 flag = nextFlagName()
-                ''' Pre-algorithm Construction Phase; note there are limitations on
-                    where a LOOP node may be placed: Not at beginning or end '''
+                ''' Pre-algorithm Construction Phase '''
                 # Construct <pre1>
                 pre1 = None
                 if cfg.getEntryNode() != first_while_node:
@@ -262,39 +261,94 @@ def _normalize_seq_cfg(cfg):
         node = _get_next_seq(node, node.getType())
 
 ''' ---------------------------------------------------------------------------
+Return first LOOP node on this branch of AMB, if exists
+--------------------------------------------------------------------------- '''
+def _get_while_on_branch(amb_branch_node):
+    while AMB_JOIN not in [e.getType() for e in amb_branch_node.getOutgoingEdges()]:
+        if amb_branch_node.getType() == LOOP:
+            return amb_branch_node
+        amb_branch_node = _get_next_seq(amb_branch_node, amb_branch_node.getType())
+    return None
+
+''' ---------------------------------------------------------------------------
 Scan for branching back edges in all sub-structures (e.g. in AMBs and LOOPs)
 ... and reduce to a single back edge per sub-structure
 - CFG modified in place
 - Transplant the AMB block
+- Does not handle a while loop on a single branch
 --------------------------------------------------------------------------- '''
 def _normalize_amb_cfg(cfg):
-    # Traverse until AMB;
+    node = cfg.getEntryNode()
 
-    # Try to get first LOOP on path1 and first LOOP on path2
+    while node:
+        if node.getType() == AMB:
+            while_nodes = []
+            for e in node.getOutgoingEdges():
+                while_nodes.append(_get_while_on_branch(e.getEndpoint()))
+            if len(while_nodes) == 2:
+                l_while = while_nodes[0]
+                r_while = while_nodes[1]
 
-    # If both paths have LOOPs, apply AMB algorithm
+            ''' Pre-algorithm Construction Phase '''
+            # pre1, body1, post1, pre2, body2, post2
 
-    # If only one path has LOOP; apply seq to that path until only one back edge
-    # ... then pull that LOOP out using AMB algorithm
+            ''' Algorithm phase; repoint above CFGs '''
 
-    # Call _normalize_amb_cfg on AMB exit
-    pass
+        # Get next node in sequence after node
+        node = _get_next_seq(node, node.getType())
 
 ''' ---------------------------------------------------------------------------
 Scan for nested back edges in all sub-structures (e.g. in AMBs and LOOPs)
 ... and reduce to a single back edge per sub-structure
 - CFG modified in place
 - Transplant the LOOP block
+- Does not handle a nesting deeper than 2
 --------------------------------------------------------------------------- '''
 def _normalize_loop_cfg(cfg):
-    # Traverse until LOOP;
+    node = cfg.getEntryNode()
 
-    # Traverse inside LOOP until LOOP
+    while node:
+        if node.getType() == LOOP:
+            # Temporarily snip off back edge
+            outer_back_edge = None
+            for e in node.getIncomingEdges():
+                if e.getType() == LOOP_BACK:
+                    outer_back_edge = e
+                    e.getSource().delOutgoingEdge(e)
+            assert outer_back_edge is not None
 
-    # Apply algorithm
+            # Walk through inner node and try to find an inner while
+            inner_node = _get_loop_entry_edge(node).getEndpoint()
+            inner_while_found = False
+            while inner_node:
+                if inner_node.getType() == LOOP:
+                    inner_while_found = True
+                    break
+                inner_node = _get_next_seq(inner_node, inner_node.getType())
+            if not inner_while_found:
+                # Restore back edge
+                restored_back_edge = False
+                for e in node.getIncomingEdges():
+                    if e.getType() == LOOP_BACK:
+                        outer_back_edge = e
+                        e.getSource().addOutgoingEdge(e)
+                        restored_back_edge = True
+                assert restored_back_edge
+            else:
+                # We have both node (outer while) and inner_node (inner while)
 
-    # Rec call _normalize_loop_cfg on LOOP exit
-    pass
+
+                ''' Pre-algorithm Construction Phase '''
+                # pre, body, post
+
+                ''' Algorithm phase; repoint above CFGs '''
+
+
+        node = _get_next_seq(node, node.getType())
+
+
+
+
 
 ''' ---------------------------------------------------------------------------
 Return number of backedges in the CFG
@@ -309,8 +363,8 @@ def _normalize_cfg(cfg):
     back_edge_count = _num_back_edges(cfg)
     while back_edge_count > 1:
         # Three passes focused on different normalizations
-        _normalize_amb_cfg(cfg)
-        _normalize_loop_cfg(cfg)
+        #_normalize_amb_cfg(cfg)
+        #_normalize_loop_cfg(cfg)
         _normalize_seq_cfg(cfg) # SEQ scan skips over above structures
                                  # b/c the above normalizations pull out
                                  # while loops in them

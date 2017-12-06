@@ -39,50 +39,50 @@ digraph {
 	85 [label=LOOP]
 	109 [label=SEQ]
 	86 [label=AMB]
+	91 [label=SEQ]
 	87 [label=ASSUME]
 	88 [label="=="]
 	89 [label="_flag_1 "]
 	88 -> 89
-	90 [label=" FALSE"]
+	90 [label=" TRUE"]
 	88 -> 90
 	87 -> 88
-	86 -> 87
+	91 -> 87
 	95 [label=SEQ]
-	91 [label=ASSUME]
-	92 [label="=="]
-	93 [label="_flag_1 "]
+	92 [label=ASSIGN]
+	93 [label=_flag_1]
 	92 -> 93
-	94 [label=" TRUE"]
+	94 [label=FALSE]
 	92 -> 94
-	91 -> 92
-	95 -> 91
-	99 [label=SEQ]
-	96 [label=ASSIGN]
-	97 [label=_flag_1]
+	95 -> 92
+	100 [label=SEQ]
+	96 [label=ASSUME]
+	97 [label="=="]
+	98 [label="_flag_0 "]
+	97 -> 98
+	99 [label=" FALSE"]
+	97 -> 99
 	96 -> 97
-	98 [label=FALSE]
-	96 -> 98
-	99 -> 96
-	104 [label=SEQ]
-	100 [label=ASSUME]
-	101 [label="=="]
-	102 [label="_flag_0 "]
+	100 -> 96
+	101 [label=ASSUME]
+	102 [label="=="]
+	103 [label="b "]
+	102 -> 103
+	104 [label=" 0"]
+	102 -> 104
 	101 -> 102
-	103 [label=" FALSE"]
-	101 -> 103
 	100 -> 101
-	104 -> 100
+	95 -> 100
+	91 -> 95
+	86 -> 91
 	105 [label=ASSUME]
 	106 [label="=="]
-	107 [label="b "]
+	107 [label="_flag_1 "]
 	106 -> 107
-	108 [label=" 0"]
+	108 [label=" FALSE"]
 	106 -> 108
 	105 -> 106
-	104 -> 105
-	99 -> 104
-	95 -> 99
-	86 -> 95
+	86 -> 105
 	109 -> 86
 	110 [label=AMB]
 	115 [label=SEQ]
@@ -122,40 +122,40 @@ digraph {
 	128 -> 124
 	147 [label=SEQ]
 	129 [label=AMB]
+	134 [label=SEQ]
 	130 [label=ASSUME]
 	131 [label="=="]
 	132 [label="_flag_0 "]
 	131 -> 132
-	133 [label=" FALSE"]
+	133 [label=" TRUE"]
 	131 -> 133
 	130 -> 131
-	129 -> 130
+	134 -> 130
 	138 [label=SEQ]
-	134 [label=ASSUME]
-	135 [label="=="]
-	136 [label="_flag_0 "]
+	135 [label=ASSIGN]
+	136 [label=_flag_0]
 	135 -> 136
-	137 [label=" TRUE"]
+	137 [label=FALSE]
 	135 -> 137
-	134 -> 135
-	138 -> 134
-	142 [label=SEQ]
-	139 [label=ASSIGN]
-	140 [label=_flag_0]
+	138 -> 135
+	139 [label=ASSUME]
+	140 [label="=="]
+	141 [label="a "]
+	140 -> 141
+	142 [label=" 0"]
+	140 -> 142
 	139 -> 140
-	141 [label=FALSE]
-	139 -> 141
-	142 -> 139
+	138 -> 139
+	134 -> 138
+	129 -> 134
 	143 [label=ASSUME]
 	144 [label="=="]
-	145 [label="a "]
+	145 [label="_flag_0 "]
 	144 -> 145
-	146 [label=" 0"]
+	146 [label=" FALSE"]
 	144 -> 146
 	143 -> 144
-	142 -> 143
-	138 -> 142
-	129 -> 138
+	129 -> 143
 	147 -> 129
 	148 [label=AMB]
 	153 [label=SEQ]
