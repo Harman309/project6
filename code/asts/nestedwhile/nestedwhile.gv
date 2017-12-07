@@ -50,88 +50,50 @@ digraph {
 	27 -> 29
 	26 -> 27
 	25 -> 26
-	30 [label=SEQ]
-	31 [label=ASSIGN]
-	32 [label=k]
-	31 -> 32
-	33 [label=1]
-	31 -> 33
+	30 [label=ASSIGN]
+	31 [label=k]
 	30 -> 31
-	34 [label=SEQ]
-	35 [label=LOOP]
-	36 [label=SEQ]
-	37 [label=ASSUME]
-	38 [label="!="]
-	39 [label=l]
-	38 -> 39
-	40 [label=0]
-	38 -> 40
-	37 -> 38
-	36 -> 37
-	41 [label=ASSIGN]
-	42 [label=k]
-	41 -> 42
-	43 [label=2]
-	41 -> 43
-	36 -> 41
-	35 -> 36
-	34 -> 35
-	44 [label=SEQ]
-	45 [label=ASSUME]
-	46 [label="=="]
-	47 [label=l]
-	46 -> 47
-	48 [label=0]
-	46 -> 48
-	45 -> 46
-	44 -> 45
-	49 [label=ASSIGN]
-	50 [label=m]
-	49 -> 50
-	51 [label=0]
-	49 -> 51
-	44 -> 49
-	34 -> 44
-	30 -> 34
+	32 [label=1]
+	30 -> 32
 	25 -> 30
 	24 -> 25
 	23 -> 24
-	52 [label=SEQ]
-	53 [label=ASSUME]
-	54 [label="=="]
-	55 [label=j]
-	54 -> 55
-	56 [label=0]
-	54 -> 56
-	53 -> 54
-	52 -> 53
-	57 [label=ASSIGN]
-	58 [label=m]
-	57 -> 58
-	59 [label=1]
-	57 -> 59
-	52 -> 57
-	23 -> 52
+	33 [label=SEQ]
+	34 [label=ASSUME]
+	35 [label="=="]
+	36 [label=j]
+	35 -> 36
+	37 [label=0]
+	35 -> 37
+	34 -> 35
+	33 -> 34
+	38 [label=ASSIGN]
+	39 [label=m]
+	38 -> 39
+	40 [label=1]
+	38 -> 40
+	33 -> 38
+	23 -> 33
 	19 -> 23
 	14 -> 19
 	13 -> 14
 	12 -> 13
-	60 [label=SEQ]
-	61 [label=ASSUME]
-	62 [label="!="]
-	63 [label=i]
-	62 -> 63
-	64 [label=0]
-	62 -> 64
-	61 -> 62
-	60 -> 61
-	65 [label=ASSIGN]
-	66 [label=m]
-	65 -> 66
-	67 [label=2]
-	65 -> 67
-	60 -> 65
-	12 -> 60
+	41 [label=SEQ]
+	42 [label=ASSUME]
+	43 [label="!="]
+	44 [label=i]
+	43 -> 44
+	45 [label=0]
+	43 -> 45
+	42 -> 43
+	41 -> 42
+	46 [label=ASSIGN]
+	47 [label=m]
+	46 -> 47
+	48 [label=2]
+	46 -> 48
+	41 -> 46
+	12 -> 41
 	8 -> 12
 	4 -> 8
 	0 -> 4

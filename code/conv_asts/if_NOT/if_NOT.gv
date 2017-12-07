@@ -19,7 +19,7 @@ digraph {
 	32 [label=SEQ]
 	27 [label=ASSUME]
 	28 [label=NOT]
-	29 [label="!="]
+	29 [label="=="]
 	30 [label="a "]
 	29 -> 30
 	31 [label=" 0"]
@@ -30,14 +30,14 @@ digraph {
 	33 [label=ASSIGN]
 	34 [label=b]
 	33 -> 34
-	35 [label=2]
+	35 [label=3]
 	33 -> 35
 	32 -> 33
 	26 -> 32
 	41 [label=SEQ]
 	36 [label=ASSUME]
 	37 [label=NOT]
-	38 [label="=="]
+	38 [label="!="]
 	39 [label="a "]
 	38 -> 39
 	40 [label=" 0"]
@@ -48,7 +48,7 @@ digraph {
 	42 [label=ASSIGN]
 	43 [label=b]
 	42 -> 43
-	44 [label=3]
+	44 [label=2]
 	42 -> 44
 	41 -> 42
 	26 -> 41

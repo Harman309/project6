@@ -21,10 +21,9 @@ from norm import *
 sample_asts = ["../samples/if.txt", \
                "../samples/while.txt", \
                "../samples/if_NOT.txt", \
-               #"../samples/combinedwhile.txt", \
-               #"../samples/ambwhile.txt", \
-               #"../samples/nestedwhile.txt", \
-               "../samples/seqwhile.txt"]
+               "../samples/seqwhile.txt", \
+               "../samples/nestedwhile.txt", \
+               "../samples/ambwhile.txt"]
                
 
 ''' ---------------------------------------------------------------------------

@@ -10,6 +10,7 @@ to a CFG
 =========================================================================== """
 from lib import *
 from ast import *
+import copy
 
 
 """ ======================================================================= """
@@ -48,6 +49,20 @@ class CFG():
 
     def removeEdges(self, edges):
         self._edgeSet = self._edgeSet - edges
+
+    def getNodes(self):
+        nodes = set()
+        for e in self.getEdgeSet():
+            nodes = nodes | set([e.getSource()])
+            nodes = nodes | set([e.getEndpoint()])
+        return nodes
+
+    def getCopy(self):
+        copy_cfg = copy.deepcopy(self)
+        for n in self.getNodes():
+            # Update node's ID
+            n.setNewID()
+        return copy_cfg
 
 ''' ---------------------------------------------------------------------------
 Define a node in the CFG:

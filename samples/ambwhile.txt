@@ -9,8 +9,6 @@ SEQ(AMB(
 							SEQ(ASSUME(b >= 0), ASSIGN(c, 6))),
 						SEQ(ASSUME(b < 0), ASSIGN(i, a))))),
 
-SEQ(LOOP(
-		SEQ(ASSUME(i == 0), ASSIGN(z, -1))),
-SEQ(ASSUME(i !=0), ASSIGN(b, z)))))) 
+SEQ(ASSIGN(z, -1), ASSIGN(b, z)))))
 
 

@@ -20,7 +20,7 @@ def _get_next_seq(node, node_type):
     def _next_seq(ep):
         next_edge = ep.getOutgoingEdges()
         # Either has next SEQ, or this is the terminal node
-        assert len(next_edge) in [0, 1]
+        #assert len(next_edge) in [0, 1]
         # No next SEQ
         if len(next_edge) == 0:
             return None

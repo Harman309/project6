@@ -18,7 +18,7 @@ digraph {
 	26 [label=AMB]
 	31 [label=SEQ]
 	27 [label=ASSUME]
-	28 [label="!="]
+	28 [label="=="]
 	29 [label="a "]
 	28 -> 29
 	30 [label=" 0"]
@@ -28,13 +28,13 @@ digraph {
 	32 [label=ASSIGN]
 	33 [label=b]
 	32 -> 33
-	34 [label=2]
+	34 [label=3]
 	32 -> 34
 	31 -> 32
 	26 -> 31
 	39 [label=SEQ]
 	35 [label=ASSUME]
-	36 [label="=="]
+	36 [label="!="]
 	37 [label="a "]
 	36 -> 37
 	38 [label=" 0"]
@@ -44,7 +44,7 @@ digraph {
 	40 [label=ASSIGN]
 	41 [label=b]
 	40 -> 41
-	42 [label=3]
+	42 [label=2]
 	40 -> 42
 	39 -> 40
 	26 -> 39

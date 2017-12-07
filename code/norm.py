@@ -13,7 +13,6 @@ from ast import *
 from cfg import *
 from conv import _get_next_seq
 from conv import to_ast
-import copy
 
 """ ======================================================================= """
 """ ==================     PRIVATE FUNCTIONS      ========================= """
@@ -62,6 +61,15 @@ def _get_loop_back_edge(node):
     raise ValueError("Calling _get_loop_back_edge when no LOOP_BACK edge exists in set!")
 
 ''' ---------------------------------------------------------------------------
+Return the previous node (for non-LOOP node)
+--------------------------------------------------------------------------- '''
+def _get_prev(node):
+    in_edges = node.getIncomingEdges()
+    assert len(in_edges) == 1
+    for e in in_edges:
+        return e.getSource()
+
+''' ---------------------------------------------------------------------------
 Remove all 4 edges (LOOP_ENTRY, LOOP_OUT; and LOOP_BACK, LOOP_IN)
 --------------------------------------------------------------------------- '''
 def _nuke_while_node(cfg, node):
@@ -82,17 +90,28 @@ Remove all 4 edges (2x AMB_SPLIT, 2x AMB_JOIN)
 --------------------------------------------------------------------------- '''
 def _nuke_amb_node(cfg, node):
     amb_split_edges = node.getOutgoingEdges()
-    assert len(loop_in_edges) == 2
+    assert len(amb_split_edges) == 2
     for e in amb_split_edges:
+        assert e.getType() == AMB_SPLIT
         e.getEndpoint().delIncomingEdge(e)
+        cfg.removeEdges(set([e]))
+
+    for e in node.getIncomingEdges():
+        e.getSource().delOutgoingEdge(e)
         cfg.removeEdges(set([e]))
 
     exit_node = node.getAMBExit()
     amb_join_edges = exit_node.getIncomingEdges()
-    assert len(loop_out_edges) == 2
-    for e in loop_out_edges:
+    assert len(amb_join_edges) == 2
+    for e in amb_join_edges:
+        assert e.getType() == AMB_JOIN
+        e.getSource().delOutgoingEdge(e)
+        cfg.removeEdges(set([e]))
+
+    for e in exit_node.getOutgoingEdges():
         e.getEndpoint().delIncomingEdge(e)
         cfg.removeEdges(set([e]))
+
 
 ''' ---------------------------------------------------------------------------
 Return a CFG with two nodes and edge: flag (type, = or ==) val
@@ -281,11 +300,22 @@ def _normalize_seq_cfg(cfg):
 Return first LOOP node on this branch of AMB, if exists
 --------------------------------------------------------------------------- '''
 def _get_while_on_branch(amb_branch_node):
-    while AMB_JOIN not in [e.getType() for e in amb_branch_node.getOutgoingEdges()]:
+    start_node = amb_branch_node
+    while amb_branch_node and (AMB_JOIN not in [e.getType() for e in amb_branch_node.getOutgoingEdges()]):
         if amb_branch_node.getType() == LOOP:
-            return amb_branch_node
+            # Get exit node of this amb branch too
+            final_node = amb_branch_node
+            n = _get_next_seq(final_node, final_node.getType())
+            while n:
+                final_node = n
+                n = _get_next_seq(final_node, final_node.getType())
+            if amb_branch_node == final_node:
+                print("WARNING: A LOOP node is terminating an AMB branch, pad LOOP after with ASSUME(TRUE)")
+            if amb_branch_node == start_node:
+                print("WARNING: A LOOP node is starting an AMB branch, pad LOOP before with ASSUME(TRUE)")
+            return amb_branch_node, start_node, final_node
         amb_branch_node = _get_next_seq(amb_branch_node, amb_branch_node.getType())
-    return None
+    return None, None, None
 
 ''' ---------------------------------------------------------------------------
 Scan for branching back edges in all sub-structures (e.g. in AMBs and LOOPs)
@@ -299,17 +329,103 @@ def _normalize_amb_cfg(cfg):
 
     while node:
         if node.getType() == AMB:
+            # Temporarily snip the AMB_JOINS
+            for e in node.getAMBExit().getIncomingEdges():
+                e.getSource().delOutgoingEdge(e)
             while_nodes = []
             for e in node.getOutgoingEdges():
-                while_nodes.append(_get_while_on_branch(e.getEndpoint()))
+                while_node, start_node, final_node = _get_while_on_branch(e.getEndpoint())
+                if while_node and start_node and final_node:
+                    while_nodes.append([while_node, start_node, final_node])
+            # Restore the AMB_JOINS
+            for e in node.getAMBExit().getIncomingEdges():
+                e.getSource().addOutgoingEdge(e)
             if len(while_nodes) == 2:
-                l_while = while_nodes[0]
-                r_while = while_nodes[1]
+                l_while     = while_nodes[0][0]
+                l_amb_entry = while_nodes[0][1]
+                l_amb_exit  = while_nodes[0][2]
 
+                r_while     = while_nodes[1][0]
+                r_amb_entry = while_nodes[1][1]
+                r_amb_exit  = while_nodes[1][2]
+
+                flag = nextFlagName()
                 ''' Pre-algorithm Construction Phase '''
                 # pre1, body1, post1, pre2, body2, post2
+                before = None
+                if cfg.getEntryNode() != node:
+                    before = CFG()
+                    before.setEntryNode(cfg.getEntryNode())
+                    before.setExitNode(_get_prev(node))
+
+                pre1 = CFG()
+                pre1.setEntryNode(l_amb_entry)
+                pre1.setExitNode(_get_loop_in_edge(l_while).getSource())
+
+                body1 = CFG()
+                body1.setEntryNode(_get_loop_entry_edge(l_while).getEndpoint())
+                body1.setExitNode(_get_loop_back_edge(l_while).getSource())
+
+                post1 = CFG()
+                post1.setEntryNode(_get_loop_out_edge(l_while).getEndpoint())
+                post1.setExitNode(l_amb_exit)
+
+                pre2 = CFG()
+                pre2.setEntryNode(r_amb_entry)
+                pre2.setExitNode(_get_loop_in_edge(r_while).getSource())
+
+                body2 = CFG()
+                body2.setEntryNode(_get_loop_entry_edge(r_while).getEndpoint())
+                body2.setExitNode(_get_loop_back_edge(r_while).getSource())
+
+                post2 = CFG()
+                post2.setEntryNode(_get_loop_out_edge(r_while).getEndpoint())
+                post2.setExitNode(r_amb_exit)
+
+                after = None
+                if cfg.getExitNode() != node.getAMBExit():
+                    after = CFG()
+                    after.setEntryNode(_get_next_seq(node, node.getType()))
+                    after.setExitNode(cfg.getExitNode())
 
                 ''' Algorithm phase; repoint above CFGs '''
+                _nuke_while_node(cfg, l_while)
+                _nuke_while_node(cfg, r_while)
+                _nuke_amb_node(cfg, node)
+
+                flag_cfg_1, flagEntry_1, flagExit_1 = _flag_cfg(cfg, flag, ASSIGN, TRUE)
+                flag_cfg_2, flagEntry_2, flagExit_2 = _flag_cfg(cfg, flag, ASSIGN, FALSE)
+
+                flag_cfg_3, flagEntry_3, flagExit_3 = _flag_cfg(cfg, flag, ASSUME, TRUE)
+                flag_cfg_4, flagEntry_4, flagExit_4 = _flag_cfg(cfg, flag, ASSUME, FALSE)
+
+                flag_cfg_5, flagEntry_5, flagExit_5 = _flag_cfg(cfg, flag, ASSUME, TRUE)
+                flag_cfg_6, flagEntry_6, flagExit_6 = _flag_cfg(cfg, flag, ASSUME, FALSE)
+
+                if_cfg_1 = _create_amb(cfg, 
+                                       _chain(cfg, flag_cfg_1, pre1),
+                                       _chain(cfg, flag_cfg_2, pre2))
+
+                if before:
+                    _connect(cfg, before.getExitNode(), if_cfg_1.getEntryNode())
+
+                while_cfg = _create_loop(cfg,
+                                         _create_amb(cfg, 
+                                                     _chain(cfg, flag_cfg_3, body1),
+                                                     _chain(cfg, flag_cfg_4, body2)))
+
+                _connect(cfg, if_cfg_1.getExitNode(), while_cfg.getEntryNode())
+
+                if_cfg_2 = _create_amb(cfg,
+                                       _chain(cfg, flag_cfg_5, post1),
+                                       _chain(cfg, flag_cfg_6, post2))
+
+                _connect(cfg, while_cfg.getExitNode(), if_cfg_2.getEntryNode())
+
+                if after:
+                    _connect(cfg, if_cfg_2.getExitNode(), after.getEntryNode())
+                return
+                #node = while_cfg.getExitNode()
 
         # Get next node in sequence after node
         node = _get_next_seq(node, node.getType())
@@ -342,18 +458,18 @@ def _normalize_loop_cfg(cfg):
                     inner_while_found = True
                     break
                 inner_node = _get_next_seq(inner_node, inner_node.getType())
-            if not inner_while_found:
-                # Restore back edge
-                restored_back_edge = False
-                for e in node.getIncomingEdges():
-                    if e.getType() == LOOP_BACK:
-                        outer_back_edge = e
-                        e.getSource().addOutgoingEdge(e)
-                        restored_back_edge = True
-                assert restored_back_edge
-            else:
+            # Restore back edge
+            restored_back_edge = False
+            for e in node.getIncomingEdges():
+                if e.getType() == LOOP_BACK:
+                    outer_back_edge = e
+                    e.getSource().addOutgoingEdge(e)
+                    restored_back_edge = True
+            assert restored_back_edge
+            if inner_while_found:
                 # We have both node (outer while) and inner_node (inner while)
 
+                flag = nextFlagName()
                 ''' Pre-algorithm Construction Phase '''
                 # Construct <pre1>
                 before = None
@@ -438,11 +554,9 @@ def _normalize_cfg(cfg):
     back_edge_count = _num_back_edges(cfg)
     while back_edge_count > 1:
         # Three passes focused on different normalizations
-        #_normalize_amb_cfg(cfg)
-        #_normalize_loop_cfg(cfg)
-        _normalize_seq_cfg(cfg) # SEQ scan skips over above structures
-                                 # b/c the above normalizations pull out
-                                 # while loops in them
+        _normalize_seq_cfg(cfg)
+        _normalize_loop_cfg(cfg)
+        _normalize_amb_cfg(cfg)        
         
         # Loop invariant to guarantee termination
         old_back_edge_count    = back_edge_count

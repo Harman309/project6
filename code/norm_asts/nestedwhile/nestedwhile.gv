@@ -1,0 +1,190 @@
+// nestedwhile
+digraph {
+	46 [label=SEQ]
+	43 [label=ASSIGN]
+	44 [label=i]
+	43 -> 44
+	45 [label=0]
+	43 -> 45
+	46 -> 43
+	50 [label=SEQ]
+	47 [label=ASSIGN]
+	48 [label=j]
+	47 -> 48
+	49 [label=-1]
+	47 -> 49
+	50 -> 47
+	54 [label=SEQ]
+	51 [label=ASSIGN]
+	52 [label=l]
+	51 -> 52
+	53 [label=-2]
+	51 -> 53
+	54 -> 51
+	71 [label=SEQ]
+	55 [label=AMB]
+	59 [label=SEQ]
+	56 [label=ASSIGN]
+	57 [label=_flag_0]
+	56 -> 57
+	58 [label=TRUE]
+	56 -> 58
+	59 -> 56
+	64 [label=SEQ]
+	60 [label=ASSUME]
+	61 [label="=="]
+	62 [label="i "]
+	61 -> 62
+	63 [label=" 0"]
+	61 -> 63
+	60 -> 61
+	64 -> 60
+	65 [label=ASSIGN]
+	66 [label=k]
+	65 -> 66
+	67 [label=0]
+	65 -> 67
+	64 -> 65
+	59 -> 64
+	55 -> 59
+	68 [label=ASSIGN]
+	69 [label=_flag_0]
+	68 -> 69
+	70 [label=FALSE]
+	68 -> 70
+	55 -> 68
+	71 -> 55
+	109 [label=SEQ]
+	72 [label=LOOP]
+	73 [label=AMB]
+	78 [label=SEQ]
+	74 [label=ASSUME]
+	75 [label="=="]
+	76 [label="_flag_0 "]
+	75 -> 76
+	77 [label=" TRUE"]
+	75 -> 77
+	74 -> 75
+	78 -> 74
+	83 [label=SEQ]
+	79 [label=ASSUME]
+	80 [label="=="]
+	81 [label="j "]
+	80 -> 81
+	82 [label=" 0"]
+	80 -> 82
+	79 -> 80
+	83 -> 79
+	87 [label=SEQ]
+	84 [label=ASSIGN]
+	85 [label=m]
+	84 -> 85
+	86 [label=1]
+	84 -> 86
+	87 -> 84
+	92 [label=SEQ]
+	88 [label=ASSUME]
+	89 [label="=="]
+	90 [label="i "]
+	89 -> 90
+	91 [label=" 0"]
+	89 -> 91
+	88 -> 89
+	92 -> 88
+	93 [label=ASSIGN]
+	94 [label=k]
+	93 -> 94
+	95 [label=0]
+	93 -> 95
+	92 -> 93
+	87 -> 92
+	83 -> 87
+	78 -> 83
+	73 -> 78
+	100 [label=SEQ]
+	96 [label=ASSUME]
+	97 [label="=="]
+	98 [label="_flag_0 "]
+	97 -> 98
+	99 [label=" FALSE"]
+	97 -> 99
+	96 -> 97
+	100 -> 96
+	105 [label=SEQ]
+	101 [label=ASSUME]
+	102 [label="!="]
+	103 [label="j "]
+	102 -> 103
+	104 [label=" 0"]
+	102 -> 104
+	101 -> 102
+	105 -> 101
+	106 [label=ASSIGN]
+	107 [label=k]
+	106 -> 107
+	108 [label=1]
+	106 -> 108
+	105 -> 106
+	100 -> 105
+	73 -> 100
+	72 -> 73
+	109 -> 72
+	128 [label=SEQ]
+	110 [label=AMB]
+	115 [label=SEQ]
+	111 [label=ASSUME]
+	112 [label="=="]
+	113 [label="_flag_0 "]
+	112 -> 113
+	114 [label=" TRUE"]
+	112 -> 114
+	111 -> 112
+	115 -> 111
+	120 [label=SEQ]
+	116 [label=ASSUME]
+	117 [label="=="]
+	118 [label="j "]
+	117 -> 118
+	119 [label=" 0"]
+	117 -> 119
+	116 -> 117
+	120 -> 116
+	121 [label=ASSIGN]
+	122 [label=m]
+	121 -> 122
+	123 [label=1]
+	121 -> 123
+	120 -> 121
+	115 -> 120
+	110 -> 115
+	124 [label=ASSUME]
+	125 [label="=="]
+	126 [label="_flag_0 "]
+	125 -> 126
+	127 [label=" FALSE"]
+	125 -> 127
+	124 -> 125
+	110 -> 124
+	128 -> 110
+	133 [label=SEQ]
+	129 [label=ASSUME]
+	130 [label="!="]
+	131 [label="i "]
+	130 -> 131
+	132 [label=" 0"]
+	130 -> 132
+	129 -> 130
+	133 -> 129
+	134 [label=ASSIGN]
+	135 [label=m]
+	134 -> 135
+	136 [label=2]
+	134 -> 136
+	133 -> 134
+	128 -> 133
+	109 -> 128
+	71 -> 109
+	54 -> 71
+	50 -> 54
+	46 -> 50
+}
