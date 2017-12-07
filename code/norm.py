@@ -78,6 +78,23 @@ def _nuke_while_node(cfg, node):
         cfg.removeEdges(set([e]))
 
 ''' ---------------------------------------------------------------------------
+Remove all 4 edges (2x AMB_SPLIT, 2x AMB_JOIN)
+--------------------------------------------------------------------------- '''
+def _nuke_amb_node(cfg, node):
+    amb_split_edges = node.getOutgoingEdges()
+    assert len(loop_in_edges) == 2
+    for e in amb_split_edges:
+        e.getEndpoint().delIncomingEdge(e)
+        cfg.removeEdges(set([e]))
+
+    exit_node = node.getAMBExit()
+    amb_join_edges = exit_node.getIncomingEdges()
+    assert len(loop_out_edges) == 2
+    for e in loop_out_edges:
+        e.getEndpoint().delIncomingEdge(e)
+        cfg.removeEdges(set([e]))
+
+''' ---------------------------------------------------------------------------
 Return a CFG with two nodes and edge: flag (type, = or ==) val
 --------------------------------------------------------------------------- '''
 def _flag_cfg(cfg, flag, t, val):
@@ -289,10 +306,10 @@ def _normalize_amb_cfg(cfg):
                 l_while = while_nodes[0]
                 r_while = while_nodes[1]
 
-            ''' Pre-algorithm Construction Phase '''
-            # pre1, body1, post1, pre2, body2, post2
+                ''' Pre-algorithm Construction Phase '''
+                # pre1, body1, post1, pre2, body2, post2
 
-            ''' Algorithm phase; repoint above CFGs '''
+                ''' Algorithm phase; repoint above CFGs '''
 
         # Get next node in sequence after node
         node = _get_next_seq(node, node.getType())
