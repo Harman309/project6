@@ -10,6 +10,14 @@
 - Follow output to retrieve results
 - Successive tests in test.py repeat prior tests for completeness; comment out prior tests to not generate intermediate files (e.g. remove all but normalization test to just compute and visualize the normalized WHILE programs)
 
+## Implementation
+- All required components are implemented
+- Component 5 has some limitations on a few edge cases:
+    - A single LOOP on one AMB branch, but none on the other may cause unexpected behaviour
+    - A nesting deeper than two LOOPs at a time may cause unexpected behaviour; to work-around this, re-run twice
+- Core functionality of Component 5 (for each case) is demonstrated in samples/
+
+
 ## Team
 - Michael Li
 - Harman Sran
