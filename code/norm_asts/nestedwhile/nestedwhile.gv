@@ -62,58 +62,56 @@ digraph {
 	75 [label="=="]
 	76 [label="_flag_0 "]
 	75 -> 76
-	77 [label=" TRUE"]
+	77 [label=" FALSE"]
 	75 -> 77
 	74 -> 75
 	78 -> 74
 	83 [label=SEQ]
 	79 [label=ASSUME]
-	80 [label="=="]
+	80 [label="!="]
 	81 [label="j "]
 	80 -> 81
 	82 [label=" 0"]
 	80 -> 82
 	79 -> 80
 	83 -> 79
-	87 [label=SEQ]
 	84 [label=ASSIGN]
-	85 [label=m]
+	85 [label=k]
 	84 -> 85
 	86 [label=1]
 	84 -> 86
-	87 -> 84
-	92 [label=SEQ]
-	88 [label=ASSUME]
-	89 [label="=="]
-	90 [label="i "]
-	89 -> 90
-	91 [label=" 0"]
-	89 -> 91
-	88 -> 89
-	92 -> 88
-	93 [label=ASSIGN]
-	94 [label=k]
-	93 -> 94
-	95 [label=0]
-	93 -> 95
-	92 -> 93
-	87 -> 92
-	83 -> 87
+	83 -> 84
 	78 -> 83
 	73 -> 78
+	91 [label=SEQ]
+	87 [label=ASSUME]
+	88 [label="=="]
+	89 [label="_flag_0 "]
+	88 -> 89
+	90 [label=" TRUE"]
+	88 -> 90
+	87 -> 88
+	91 -> 87
+	96 [label=SEQ]
+	92 [label=ASSUME]
+	93 [label="=="]
+	94 [label="j "]
+	93 -> 94
+	95 [label=" 0"]
+	93 -> 95
+	92 -> 93
+	96 -> 92
 	100 [label=SEQ]
-	96 [label=ASSUME]
-	97 [label="=="]
-	98 [label="_flag_0 "]
+	97 [label=ASSIGN]
+	98 [label=m]
 	97 -> 98
-	99 [label=" FALSE"]
+	99 [label=1]
 	97 -> 99
-	96 -> 97
-	100 -> 96
+	100 -> 97
 	105 [label=SEQ]
 	101 [label=ASSUME]
-	102 [label="!="]
-	103 [label="j "]
+	102 [label="=="]
+	103 [label="i "]
 	102 -> 103
 	104 [label=" 0"]
 	102 -> 104
@@ -122,11 +120,13 @@ digraph {
 	106 [label=ASSIGN]
 	107 [label=k]
 	106 -> 107
-	108 [label=1]
+	108 [label=0]
 	106 -> 108
 	105 -> 106
 	100 -> 105
-	73 -> 100
+	96 -> 100
+	91 -> 96
+	73 -> 91
 	72 -> 73
 	109 -> 72
 	128 [label=SEQ]

@@ -39,50 +39,50 @@ digraph {
 	85 [label=LOOP]
 	109 [label=SEQ]
 	86 [label=AMB]
-	91 [label=SEQ]
 	87 [label=ASSUME]
 	88 [label="=="]
 	89 [label="_flag_1 "]
 	88 -> 89
-	90 [label=" TRUE"]
+	90 [label=" FALSE"]
 	88 -> 90
 	87 -> 88
-	91 -> 87
+	86 -> 87
 	95 [label=SEQ]
-	92 [label=ASSIGN]
-	93 [label=_flag_1]
+	91 [label=ASSUME]
+	92 [label="=="]
+	93 [label="_flag_1 "]
 	92 -> 93
-	94 [label=FALSE]
+	94 [label=" TRUE"]
 	92 -> 94
-	95 -> 92
-	100 [label=SEQ]
-	96 [label=ASSUME]
-	97 [label="=="]
-	98 [label="_flag_0 "]
-	97 -> 98
-	99 [label=" FALSE"]
-	97 -> 99
+	91 -> 92
+	95 -> 91
+	99 [label=SEQ]
+	96 [label=ASSIGN]
+	97 [label=_flag_1]
 	96 -> 97
-	100 -> 96
-	101 [label=ASSUME]
-	102 [label="=="]
-	103 [label="b "]
-	102 -> 103
-	104 [label=" 0"]
-	102 -> 104
+	98 [label=FALSE]
+	96 -> 98
+	99 -> 96
+	104 [label=SEQ]
+	100 [label=ASSUME]
+	101 [label="=="]
+	102 [label="_flag_0 "]
 	101 -> 102
+	103 [label=" FALSE"]
+	101 -> 103
 	100 -> 101
-	95 -> 100
-	91 -> 95
-	86 -> 91
+	104 -> 100
 	105 [label=ASSUME]
 	106 [label="=="]
-	107 [label="_flag_1 "]
+	107 [label="b "]
 	106 -> 107
-	108 [label=" FALSE"]
+	108 [label=" 0"]
 	106 -> 108
 	105 -> 106
-	86 -> 105
+	104 -> 105
+	99 -> 104
+	95 -> 99
+	86 -> 95
 	109 -> 86
 	110 [label=AMB]
 	115 [label=SEQ]
@@ -90,38 +90,38 @@ digraph {
 	112 [label="=="]
 	113 [label="_flag_1 "]
 	112 -> 113
-	114 [label=" TRUE"]
+	114 [label=" FALSE"]
 	112 -> 114
 	111 -> 112
 	115 -> 111
-	134 [label=SEQ]
-	116 [label=AMB]
-	121 [label=SEQ]
-	117 [label=ASSUME]
-	118 [label="=="]
-	119 [label="_flag_0 "]
-	118 -> 119
-	120 [label=" TRUE"]
-	118 -> 120
+	120 [label=SEQ]
+	116 [label=ASSUME]
+	117 [label="!="]
+	118 [label="c "]
 	117 -> 118
-	121 -> 117
-	125 [label=SEQ]
-	122 [label=ASSIGN]
-	123 [label=_flag_0]
-	122 -> 123
-	124 [label=FALSE]
-	122 -> 124
-	125 -> 122
-	126 [label=ASSUME]
-	127 [label="=="]
-	128 [label="a "]
-	127 -> 128
-	129 [label=" 0"]
-	127 -> 129
-	126 -> 127
+	119 [label=" 0"]
+	117 -> 119
+	116 -> 117
+	120 -> 116
+	121 [label=ASSIGN]
+	122 [label=d]
+	121 -> 122
+	123 [label=30]
+	121 -> 123
+	120 -> 121
+	115 -> 120
+	110 -> 115
+	128 [label=SEQ]
+	124 [label=ASSUME]
+	125 [label="=="]
+	126 [label="_flag_1 "]
 	125 -> 126
-	121 -> 125
-	116 -> 121
+	127 [label=" TRUE"]
+	125 -> 127
+	124 -> 125
+	128 -> 124
+	147 [label=SEQ]
+	129 [label=AMB]
 	130 [label=ASSUME]
 	131 [label="=="]
 	132 [label="_flag_0 "]
@@ -129,35 +129,35 @@ digraph {
 	133 [label=" FALSE"]
 	131 -> 133
 	130 -> 131
-	116 -> 130
-	134 -> 116
-	135 [label=AMB]
-	140 [label=SEQ]
-	136 [label=ASSUME]
-	137 [label="=="]
-	138 [label="_flag_0 "]
-	137 -> 138
-	139 [label=" TRUE"]
-	137 -> 139
-	136 -> 137
-	140 -> 136
-	145 [label=SEQ]
-	141 [label=ASSUME]
-	142 [label="!="]
-	143 [label="a "]
+	129 -> 130
+	138 [label=SEQ]
+	134 [label=ASSUME]
+	135 [label="=="]
+	136 [label="_flag_0 "]
+	135 -> 136
+	137 [label=" TRUE"]
+	135 -> 137
+	134 -> 135
+	138 -> 134
+	142 [label=SEQ]
+	139 [label=ASSIGN]
+	140 [label=_flag_0]
+	139 -> 140
+	141 [label=FALSE]
+	139 -> 141
+	142 -> 139
+	143 [label=ASSUME]
+	144 [label="=="]
+	145 [label="a "]
+	144 -> 145
+	146 [label=" 0"]
+	144 -> 146
+	143 -> 144
 	142 -> 143
-	144 [label=" 0"]
-	142 -> 144
-	141 -> 142
-	145 -> 141
-	146 [label=ASSIGN]
-	147 [label=d]
-	146 -> 147
-	148 [label=10]
-	146 -> 148
-	145 -> 146
-	140 -> 145
-	135 -> 140
+	138 -> 142
+	129 -> 138
+	147 -> 129
+	148 [label=AMB]
 	153 [label=SEQ]
 	149 [label=ASSUME]
 	150 [label="=="]
@@ -183,23 +183,20 @@ digraph {
 	159 -> 161
 	158 -> 159
 	153 -> 158
-	135 -> 153
-	134 -> 135
-	115 -> 134
-	110 -> 115
+	148 -> 153
 	166 [label=SEQ]
 	162 [label=ASSUME]
 	163 [label="=="]
-	164 [label="_flag_1 "]
+	164 [label="_flag_0 "]
 	163 -> 164
-	165 [label=" FALSE"]
+	165 [label=" TRUE"]
 	163 -> 165
 	162 -> 163
 	166 -> 162
 	171 [label=SEQ]
 	167 [label=ASSUME]
 	168 [label="!="]
-	169 [label="c "]
+	169 [label="a "]
 	168 -> 169
 	170 [label=" 0"]
 	168 -> 170
@@ -208,11 +205,14 @@ digraph {
 	172 [label=ASSIGN]
 	173 [label=d]
 	172 -> 173
-	174 [label=30]
+	174 [label=10]
 	172 -> 174
 	171 -> 172
 	166 -> 171
-	110 -> 166
+	148 -> 166
+	147 -> 148
+	128 -> 147
+	110 -> 128
 	109 -> 110
 	85 -> 109
 	175 -> 85
