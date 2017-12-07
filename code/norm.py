@@ -13,7 +13,7 @@ from ast import *
 from cfg import *
 from conv import _get_next_seq
 from conv import to_ast
-
+import copy
 
 """ ======================================================================= """
 """ ==================     PRIVATE FUNCTIONS      ========================= """
@@ -337,18 +337,76 @@ def _normalize_loop_cfg(cfg):
             else:
                 # We have both node (outer while) and inner_node (inner while)
 
-
                 ''' Pre-algorithm Construction Phase '''
-                # pre, body, post
+                # Construct <pre1>
+                before = None
+                if cfg.getEntryNode() != node:
+                    before = CFG()
+                    before.setEntryNode(cfg.getEntryNode())
+                    before.setExitNode(_get_loop_in_edge(node).getSource())
+
+                # pre
+                pre = CFG()
+                pre.setEntryNode(_get_loop_entry_edge(node).getEndpoint())
+                pre.setExitNode(_get_loop_in_edge(inner_node).getSource())
+
+                # body
+                body = CFG()
+                body.setEntryNode(_get_loop_entry_edge(inner_node).getEndpoint())
+                body.setExitNode(_get_loop_back_edge(inner_node).getSource())
+
+                # post
+                post = CFG()
+                post.setEntryNode(_get_loop_out_edge(inner_node).getEndpoint())
+                post.setExitNode(_get_loop_back_edge(node).getSource())
+                
+                after = None
+                if cfg.getExitNode() != node:
+                    after = CFG()
+                    after.setEntryNode(_get_loop_out_edge(node).getEndpoint())
+                    after.setExitNode(cfg.getExitNode())
 
                 ''' Algorithm phase; repoint above CFGs '''
+                # 'nuke' the two while nodes (remove all 4 edges and discard the node ptrs)
+                _nuke_while_node(cfg, node)
+                _nuke_while_node(cfg, inner_node)
 
+                pre_copy = pre.getCopy()
+                post_copy = post.getCopy()
 
+                # Chain together nodes per algorithm
+                flag_cfg_1, flagEntry_1, flagExit_1 = _flag_cfg(cfg, flag, ASSIGN, TRUE)
+                flag_cfg_2, flagEntry_2, flagExit_2 = _flag_cfg(cfg, flag, ASSIGN, FALSE)
+
+                flag_cfg_3, flagEntry_3, flagExit_3 = _flag_cfg(cfg, flag, ASSUME, TRUE)
+                flag_cfg_4, flagEntry_4, flagExit_4 = _flag_cfg(cfg, flag, ASSUME, FALSE)
+
+                flag_cfg_5, flagEntry_5, flagExit_5 = _flag_cfg(cfg, flag, ASSUME, TRUE)
+                flag_cfg_6, flagEntry_6, flagExit_6 = _flag_cfg(cfg, flag, ASSUME, FALSE)
+
+                if_cfg_1 = _create_amb(cfg,
+                                        _chain(cfg, flag_cfg_1, pre),
+                                        flag_cfg_2)
+                if before:
+                    _connect(cfg, before.getExitNode(), if_cfg_1.getEntryNode())
+
+                new_while = _create_loop(cfg,
+                                         _create_amb(cfg,
+                                                     _chain(cfg, _chain(cfg, flag_cfg_3, post), pre_copy),
+                                                     _chain(cfg, flag_cfg_4, body)))
+                if_cfg_2 = _create_amb(cfg,
+                                       _chain(cfg, flag_cfg_5, post_copy),
+                                       flag_cfg_6)
+
+                _connect(cfg, if_cfg_1.getExitNode(), new_while.getEntryNode())
+                _connect(cfg, new_while.getExitNode(), if_cfg_2.getEntryNode())
+
+                if after:
+                    _connect(cfg, if_cfg_2.getExitNode(), after.getEntryNode())
+
+                node = new_while.getEntryNode()
+            
         node = _get_next_seq(node, node.getType())
-
-
-
-
 
 ''' ---------------------------------------------------------------------------
 Return number of backedges in the CFG
